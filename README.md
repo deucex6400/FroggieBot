@@ -1,7 +1,7 @@
 # FroggieBot
 This is FroggieBot, a discord bot that was originally created for the Froggie Pond discord server! 
 
-FroggieBot has a number of commands relevant to the Froggie Pond discord, including an NFT giveaway command which can be invoked with the /giveaway slash command. This command will automatically transfer an NFT from a loopring account the bot is associated with to the loopring address/ens specified in the /giveaway command.
+FroggieBot has a number of commands relevant to the Froggie Pond discord, including a Loopring NFT giveaway command which can be invoked with the /giveaway slash command. This command will automatically transfer an NFT from a loopring account the bot is associated with to the loopring address/ens specified in the /giveaway command.
 
 # Setup
 This is a .NET 6 Console App made with Visual Studio 2022. It uses DSharpPlus to interact with Discord.
