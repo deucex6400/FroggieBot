@@ -60,7 +60,7 @@ The EtherScanApiKey is needed for the /gas command to show the gas.
 Remember to plug in your own DiscordServerId and DiscordToken.
 
 # Deploy 
-You can either run the bot locally at home on your PC or deploy it as a continous web job on Azure.
+You can either run the bot locally at home on your PC,deploy it as a continous web job on Azure, or your preferred cloud hosting provider.
 
 # Notes
 FroggieBot will get rate limited by the Loopring API if many users use the /giveaway command at once.
