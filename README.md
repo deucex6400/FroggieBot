@@ -51,7 +51,7 @@ VALUES
 '987173337019072542'
 );
 ```
-NftTokenId and NftData can be found using the Loopring API Endpoint: https://api3.loopring.io/api/v3/user/nft/balances?accountId=40940&limit=50&metadata=true&offset=0 where accountId holds the nfts to giveaway. ChannelId refers to the discord channel that the giveaway will run in. In the Froggie Pond discord we have a different NFT given away in the channel/thread it is setup in.
+NftTokenId and NftData can be found using the following Loopring API Endpoint: https://api3.loopring.io/api/v3/user/nft/balances?accountId=40940&limit=50&metadata=true&offset=0 where accountId holds the nfts to giveaway. ChannelId refers to the discord channel that the giveaway will run in. In the Froggie Pond discord we have a different NFT given away in the channel/thread it is setup in.
 
 The Nft redemption table should automatically update per Nft redemption from a user and ensures that users can only redeem an nft once per giveaway.
 
