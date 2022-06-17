@@ -21,7 +21,7 @@ Create an appsettings.json file in the solution directory like below with the "C
     "LoopringAccountId": 40940, //Your loopring account id
     "LoopringTokenAddress": "0xd988", //Your counterfactual nft token address
     "Exchange": "0x0BABA1Ad5bE3a5C0a66E7ac838a129Bf948f1eA4", //Loopring Exchange address
-    "MetamaskPrivateKey": "aad10",
+    "MetamaskPrivateKey": "aad10", //Metamask private key
     "SqlServerConnectionString": "Server=tcp:blahblah.database.windows.net,1433;Initial Catalog=looprare;Persist Security Info=False;User ID=blah;Password=blah;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;", //SqlServer Connection String
     "EtherScanApiKey": "4DT", //EtherScan Api Key
     "DiscordServerId": 933963129652674671, //Discord Server Id
