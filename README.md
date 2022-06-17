@@ -65,3 +65,5 @@ You can either run the bot locally at home on your PC or deploy it as a continou
 # Notes
 FroggieBot will get rate limited by the Loopring API if many users use the /giveaway command at once.
 
+Also, all fees are paid in LRC so make sure the account giving away the NFTs has enough LRC!
+
