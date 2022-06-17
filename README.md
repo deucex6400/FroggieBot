@@ -37,7 +37,7 @@ The Sql Server Connection String should point to a Sql Server database. Setup a 
 
 ![nft redemption](https://user-images.githubusercontent.com/5258063/174227363-da05986a-6514-4950-b9d6-8f8b232c4ad4.png)
 
-The Nft giveaway table holds the information for the nft giveaway. You can add a new record like below, this must be done manually by you with each new nft giveaway you need to add
+The Nft giveaway table holds the information for the nft giveaway. You can add a new record like below, this must be done manually by you with each new nft giveaway you want to add
 
 ```sql
 Insert into nftgiveaway
@@ -62,4 +62,6 @@ Remember to plug in your own DiscordServerId and DiscordToken.
 # Deploy 
 You can either run the bot locally at home on your PC or deploy it as a continous web job on Azure.
 
+# Notes
+FroggieBot will get rate limited by the Loopring API if many users use the /giveaway command at once.
 
