@@ -29,7 +29,7 @@ Create an appsettings.json file in the solution directory like below with the "C
   }
 }
 ```
-The Loopring related settings and the metamask private key are needed to use the /mintfee and /giveaway commands. So be sure to use the account that will hold the giveaway NFTs. It needs to be a metamask private key as you can not export out the private key from the Loopring Mobile Wallet.
+The Loopring related settings and the metamask private key are needed to use the /mintfee and /giveaway commands. So be sure to use the account that will hold the giveaway NFTs. It needs to be a metamask private key as you can not export out the private key from the Loopring Mobile Smart Wallet.
 
 The Sql Server Connection String should point to a Sql Server database. Setup a Sql Server database in Azure or locally with the following tables and columns. Make the columns all varchar(100) in length.
 
