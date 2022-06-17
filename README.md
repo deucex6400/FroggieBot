@@ -51,9 +51,16 @@ VALUES
 '987173337019072542'
 );
 ```
+
+In FroggieBot's current state only one NFT can be given away per channel/thread. So if you need to update the channel/thread with a new NFT just update it's current record in the database like below
+
+```sql
+update nftgiveaway set nfttokenid = '34064', nftdata = '0x260e9461223687755f583ddec5d69be3d9f2de07ba8ef71dd642ee5808b8e4c0' where channelid = '987173337019072542';
+```
+
 NftTokenId and NftData can be found using the following Loopring API Endpoint: https://api3.loopring.io/api/v3/user/nft/balances?accountId=40940&limit=50&metadata=true&offset=0 where accountId holds the nfts to giveaway. ChannelId refers to the discord channel that the giveaway will run in. In the Froggie Pond discord we have a different NFT given away in the channel/thread it is setup in.
 
-The Nft redemption table should automatically update per Nft redemption from a user and ensures that users can only redeem an nft once per giveaway.
+The Nft redemption table should automatically update per Nft redemption from a user and ensures that users can only redeem an nft once per giveaway in the specific channel/thread.
 
 The EtherScanApiKey is needed for the /gas command to show the gas.
 
