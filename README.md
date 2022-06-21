@@ -25,7 +25,8 @@ Create an appsettings.json file in the solution directory like below with the "C
     "SqlServerConnectionString": "Server=tcp:blahblah.database.windows.net,1433;Initial Catalog=looprare;Persist Security Info=False;User ID=blah;Password=blah;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;", //SqlServer Connection String
     "EtherScanApiKey": "4DT", //EtherScan Api Key
     "DiscordServerId": 933963129652674671, //Discord Server Id
-    "DiscordToken": "OTg3Mj" //Discord Token
+    "DiscordToken": "OTg3Mj" //Discord Token,
+    "OpenAIKey": "sk-blahblah" //OpenAI Token
   }
 }
 ```
