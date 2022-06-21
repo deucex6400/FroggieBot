@@ -4,6 +4,7 @@ using DSharpPlus.SlashCommands;
 using Nethereum.Signer;
 using Nethereum.Signer.EIP712;
 using Nethereum.Util;
+using OpenAI_API;
 using PoseidonSharp;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,8 @@ namespace FroggieBot
         public SqlService SqlService { private get; set; }
 
         public Settings Settings { private get; set; }
+
+        public OpenAIAPI OpenAIAPI { private get; set; }
 
         public EtherscanService EtherscanService { private get; set; }
         [SlashCommand("mintfee", "Get current Loopring NFT Mint fee")]
@@ -499,6 +502,24 @@ namespace FroggieBot
             };
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
         }
+
+        [SlashCommand("ask", "Ask FroggieBot a question")]
+        public async Task FridgeCommand(InteractionContext ctx, [Option("question", "Your question")] string question)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            try
+            {
+                var aiResult = await OpenAIAPI.Completions.CreateCompletionAsync(prompt: question , max_tokens: 100, temperature: 0, top_p: 1, presencePenalty: 0.0, frequencyPenalty: 0, stopSequences: new string[] { Environment.NewLine});
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{aiResult.ToString()}"));
+            }
+            catch (Exception ex)
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Sorry, I do not know the answer to that..."));
+            }
+
+        }
+
+
     }
     
 }
