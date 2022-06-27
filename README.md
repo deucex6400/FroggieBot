@@ -65,6 +65,8 @@ The Nft redemption table should automatically update per Nft redemption from a u
 
 The EtherScanApiKey is needed for the /gas command to show the gas.
 
+OpenAIKey is needed if you plan to use OpenAI.
+
 Remember to plug in your own DiscordServerId and DiscordToken.
 
 # Deploy 
