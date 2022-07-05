@@ -34,5 +34,7 @@ namespace FroggieBot
                  );
 
         Task<EnsResult> GetHexAddress(string apiKey, string ens);
+
+        Task<EnsResult> GetENS(string apiKey, string hexAddress);
     }
 }

@@ -28,6 +28,8 @@ namespace FroggieBot
 
         public OpenAIAPI OpenAIAPI { private get; set; }
 
+        public EthereumService EthereumService { private get; set; }
+
         public EtherscanService EtherscanService { private get; set; }
         [SlashCommand("mintfee", "Get current Loopring NFT Mint fee")]
         public async Task NftMintFeeCommand(InteractionContext ctx, [Option("amount", "mint amount")] string mintAmount = "1")
@@ -515,6 +517,44 @@ namespace FroggieBot
             catch (Exception ex)
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Sorry, I do not know the answer to that..."));
+            }
+
+        }
+
+        [SlashCommand("ens", "Find ENSes for an address")]
+        public async Task EnsCommand(InteractionContext ctx, [Option("address", "The address in 0x Format")] string address)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            try
+            {
+                string ens = "";
+                var resultOne = await LoopringService.GetENS(Settings.LoopringApiKey, address.Trim().ToLower());
+                if(!string.IsNullOrEmpty(resultOne.data))
+                {
+                    ens += resultOne.data + ";";
+
+                }
+
+                var resultTwo = await EthereumService.GetEnsFromAddessAsync(address.Trim().ToLower());
+
+                if (!string.IsNullOrEmpty(resultTwo))
+                {
+                    ens += resultTwo + ";";
+                }
+
+                if(!string.IsNullOrEmpty(ens))
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{address} resolves to the following ENSes: {ens} "));
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Could not find ENSes for {address}"));
+                }
+
+            }
+            catch (Exception ex)
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Something went wrong with searching for the ENS! Try again later."));
             }
 
         }

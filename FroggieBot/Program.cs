@@ -35,6 +35,7 @@ new SlashCommandsConfiguration
     .AddScoped<SqlService>()
     .AddSingleton<Settings>(settings)
     .AddSingleton<OpenAIAPI>(openAI)
+    .AddSingleton<EthereumService>()
     .BuildServiceProvider()
 });
 slash.RegisterCommands<SlashCommands>(settings.DiscordServerId);

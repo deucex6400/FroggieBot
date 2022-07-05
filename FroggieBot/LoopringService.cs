@@ -153,5 +153,23 @@ namespace FroggieBot
                 return null;
             }
         }
+
+        public async Task<EnsResult> GetENS(string apiKey, string hexAddress)
+        {
+            var request = new RestRequest("api/wallet/v3/resolveName");
+            request.AddHeader("x-api-key", apiKey);
+            request.AddParameter("owner", hexAddress);
+            try
+            {
+                var response = await _client.GetAsync(request);
+                var data = JsonConvert.DeserializeObject<EnsResult>(response.Content!);
+                return data;
+            }
+            catch (HttpRequestException httpException)
+            {
+                Console.WriteLine($"Error getting ens: {httpException.Message}");
+                return null;
+            }
+        }
     }
 }
