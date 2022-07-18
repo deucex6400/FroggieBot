@@ -26,11 +26,10 @@ namespace FroggieBot
 
         public Settings Settings { private get; set; }
 
-        public OpenAIAPI OpenAIAPI { private get; set; }
-
         public EthereumService EthereumService { private get; set; }
 
         public EtherscanService EtherscanService { private get; set; }
+
         [SlashCommand("mintfee", "Get current Loopring NFT Mint fee")]
         public async Task NftMintFeeCommand(InteractionContext ctx, [Option("amount", "mint amount")] string mintAmount = "1")
         {
@@ -66,62 +65,6 @@ namespace FroggieBot
             }
         }
 
-        [SlashCommand("weather", "Get the weather of a location")]
-        public async Task WeatherCommand(InteractionContext ctx, [Option("location", "name of location")] string location = "Townsville")
-        {
-            Guid guid = Guid.NewGuid();
-            var imageUrl = $"https://dynamicnft.azurewebsites.net/api/NFT/Weather?city={HttpUtility.UrlEncode(location)}&guid={guid}";
-            var embed = new DiscordEmbedBuilder()
-            {
-                Description = $"The weather in {location}",
-                ImageUrl = imageUrl
-            };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-        }
-
-        [SlashCommand("whalewatch", "Get a random whale by akuma.loopring.eth")]
-        public async Task WhaleWatchCommand(InteractionContext ctx)
-        {
-            int randomNumber = Random.Next(1, 251); //minus 1 from max value for true length
-            var imageUrl = $"https://looprarecdn.azureedge.net/images/buoyantwhales/full/{randomNumber}.gif";
-            var embed = new DiscordEmbedBuilder()
-            {
-                Title = $"Buoyant Whale #{randomNumber}",
-                Description = $"Whales that float everywhere. By akuma.loopring.eth",
-                ImageUrl = imageUrl
-            };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-        }
-
-        [SlashCommand("sharkwatch", "Get a random sharkbod by took.loopring.eth")]
-        public async Task SharkWatchCommand(InteractionContext ctx)
-        {
-            int randomNumber = Random.Next(1, 151);//minus 1 from max value for true length
-            var imageUrl = $"https://looprarecdn.azureedge.net/images/sharkbods/full/{randomNumber}.png";
-            var embed = new DiscordEmbedBuilder()
-            {
-                Title = $"Sharkbods #{randomNumber}",
-                Description = $"Sharkbods by took.loopring.eth",
-                ImageUrl = imageUrl
-            };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-        }
-
-
-        [SlashCommand("sacredbodies", "Get a random sacred body by sk33z3r.loopring.eth")]
-        public async Task SacredBodiesCommand(InteractionContext ctx)
-        {
-            int randomNumber = Random.Next(0, 1000); //minus 1 from max value for true length
-            var imageUrl = $"https://looprarecdn.azureedge.net/images/sacredbodies/full/{randomNumber}.png";
-            var embed = new DiscordEmbedBuilder()
-            {
-                Title = $"Sacred Bodies #{randomNumber}",
-                Description = $"Generated from Sacred Geometry, Hubble Space Telescope images, and chakra colors. By sk33z3r.eth",
-                ImageUrl = imageUrl
-            };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-        }
-
         [SlashCommand("gas", "Get current gas fee")]
         public async Task GasCommand(InteractionContext ctx)
         {
@@ -140,93 +83,45 @@ namespace FroggieBot
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
         }
 
-        [SlashCommand("driverseries", "Get a random driver series by tebido3")]
-        public async Task DriverSeriesCommand(InteractionContext ctx)
+        [SlashCommand("ens", "Find ENSes for an address")]
+        public async Task EnsCommand(InteractionContext ctx, [Option("address", "The address in 0x Format")] string address)
         {
-            int randomNumber = Random.Next(1, 401); //minus 1 from max value for true length
-            var imageUrl = $"https://looprarecdn.azureedge.net/images/driverseries1/full/{randomNumber}.png";
-            var embed = new DiscordEmbedBuilder()
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            try
             {
-                Title = $"DRIVER Series 1 #{randomNumber}",
-                Description = $"The DRIVER Series is a project by Tebido3 that features art from a collaboration of Loopring NFT creators. By tebido3",
-                ImageUrl = imageUrl
-            };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-        }
-
-        [SlashCommand("digitalfragments", "Get a random digital fragment by digitalfragments.eth")]
-        public async Task DigitalFragmentsCommand(InteractionContext ctx)
-        {
-            int randomNumber = Random.Next(1, 1001);//minus 1 from max value for true length
-            var imageUrl = $"https://looprarecdn.azureedge.net/images/digitalfragments/full/{randomNumber}.gif";
-            var embed = new DiscordEmbedBuilder()
-            {
-                Title = $"Digital Fragments #{randomNumber}",
-                Description = $"A collection of procedurally generated retro inspired car runs. By digitalfragments.eth",
-                ImageUrl = imageUrl
-            };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-        }
-
-        [SlashCommand("sockdrawer", "Get a random Cryptosock by donaldgrump.loopring.eth")]
-        public async Task SockDrawerCommand(InteractionContext ctx)
-        {
-            int randomNumberOne = Random.Next(1, 3);//minus 1 from max value for true length
-
-            if (randomNumberOne == 1)
-            {
-                int randomNumberTwo = Random.Next(1, 742);//minus 1 from max value for true length
-                var imageUrl = $"https://looprarecdn.azureedge.net/images/cryptosocksV2/full/{randomNumberTwo}.png";
-                var embed = new DiscordEmbedBuilder()
+                string ens = "";
+                var resultOne = await LoopringService.GetENS(Settings.LoopringApiKey, address.Trim().ToLower());
+                if (!string.IsNullOrEmpty(resultOne.data))
                 {
-                    Title = $"Cryptosocks 2.0 #{randomNumberTwo}",
-                    Description = $"A cryptosock, straight from the sock drawer. By donaldgrump.loopring.eth",
-                    ImageUrl = imageUrl
-                };
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-            }
-            else if (randomNumberOne == 2)
-            {
-                int randomNumberTwo = Random.Next(1, 100);//minus 1 from max value for true length
-                var imageUrl = $"https://looprarecdn.azureedge.net/images/cryptosocksinspace/full/{randomNumberTwo}.png";
-                var embed = new DiscordEmbedBuilder()
+                    ens += resultOne.data + ";";
+
+                }
+
+                var resultTwo = await EthereumService.GetEnsFromAddessAsync(address.Trim().ToLower());
+
+                if (!string.IsNullOrEmpty(resultTwo))
                 {
-                    Title = $"Cryptosocks In Space! #{randomNumberTwo}",
-                    Description = $"A cryptosock, straight from the sock drawer. By donaldgrump.loopring.eth",
-                    ImageUrl = imageUrl
-                };
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+                    ens += resultTwo + ";";
+                }
+
+                if (!string.IsNullOrEmpty(ens))
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{address} resolves to the following ENSes: {ens} "));
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Could not find ENSes for {address}"));
+                }
+
             }
-        }
-
-        [SlashCommand("wuf", "Get a random NGMI Wuf by chefgoldblum.loopring.eth")]
-        public async Task WufCommand(InteractionContext ctx)
-        {
-            int randomNumber = Random.Next(1, 101);//minus 1 from max value for true length
-            var imageUrl = $"https://looprarecdn.azureedge.net/images/ngmiwuf/full/{randomNumber}.png";
-            var embed = new DiscordEmbedBuilder()
+            catch (Exception ex)
             {
-                Title = $"NGMI Wuf #{randomNumber}",
-                Description = $"These WUF aren't gonna make it. By chefgoldblum.loopring.eth",
-                ImageUrl = imageUrl
-            };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Something went wrong with searching for the ENS! Try again later."));
+            }
+
         }
 
-        [SlashCommand("frankenloop", "Get a random FrankenLoop by fudgey.loopring.eth")]
-        public async Task FrankenLoopCommand(InteractionContext ctx)
-        {
-            int randomNumber = Random.Next(1, 889);//minus 1 from max value for true length
-            var imageUrl = $"https://looprarecdn.azureedge.net/images/frankenloops/full/{randomNumber}.jpg";
-            var embed = new DiscordEmbedBuilder()
-            {
-                Title = $"FrankenLoop #{randomNumber}",
-                Description = $"Deepfried Loopheads. By fudgey.loopring.eth",
-                ImageUrl = imageUrl
-            };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-        }
-
+        /*
         [SlashCommand("giveaway", "Get a free nft!")]
         public async Task GiveawayCommand(InteractionContext ctx, [Option("address", "Loopring Layer 2 address")] string address = "0x")
         {
@@ -490,75 +385,7 @@ namespace FroggieBot
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Could not claim giveaway NFT! Try again later..."));
             }
         }
-
-        [SlashCommand("fridge", "Get a random fridge")]
-        public async Task FridgeCommand(InteractionContext ctx)
-        {
-            int randomNumber = Random.Next(1, 70);//minus 1 from max value for true length
-            var imageUrl = $"https://looprarecdn.azureedge.net/images/fridge/full/{randomNumber}.jpg";
-            var embed = new DiscordEmbedBuilder()
-            {
-                Title = $"Fridge #{randomNumber}",
-                Description = $"Aren't we all just refrigerators? - Ongo Gablogian",
-                ImageUrl = imageUrl
-            };
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(embed));
-        }
-
-        [SlashCommand("ask", "Ask FroggieBot a question")]
-        public async Task FridgeCommand(InteractionContext ctx, [Option("question", "Your question")] string question)
-        {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            try
-            {
-                var aiResult = await OpenAIAPI.Completions.CreateCompletionAsync(prompt: question , max_tokens: 100, temperature: 0, top_p: 1, presencePenalty: 0.0, frequencyPenalty: 0, stopSequences: new string[] { Environment.NewLine});
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{aiResult.ToString()}"));
-            }
-            catch (Exception ex)
-            {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Sorry, I do not know the answer to that..."));
-            }
-
-        }
-
-        [SlashCommand("ens", "Find ENSes for an address")]
-        public async Task EnsCommand(InteractionContext ctx, [Option("address", "The address in 0x Format")] string address)
-        {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            try
-            {
-                string ens = "";
-                var resultOne = await LoopringService.GetENS(Settings.LoopringApiKey, address.Trim().ToLower());
-                if(!string.IsNullOrEmpty(resultOne.data))
-                {
-                    ens += resultOne.data + ";";
-
-                }
-
-                var resultTwo = await EthereumService.GetEnsFromAddessAsync(address.Trim().ToLower());
-
-                if (!string.IsNullOrEmpty(resultTwo))
-                {
-                    ens += resultTwo + ";";
-                }
-
-                if(!string.IsNullOrEmpty(ens))
-                {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{address} resolves to the following ENSes: {ens} "));
-                }
-                else
-                {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Could not find ENSes for {address}"));
-                }
-
-            }
-            catch (Exception ex)
-            {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Something went wrong with searching for the ENS! Try again later."));
-            }
-
-        }
-
+        */
 
     }
     

@@ -37,6 +37,16 @@ namespace FroggieBot
                 Console.WriteLine($"Error getting off chain fee: {httpException.Message}");
                 return null;
             }
+            catch (JsonReaderException sre)
+            {
+                Console.WriteLine($"Error getting off chain fee: {sre.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting off chain fee: {ex.Message}");
+                return null;
+            }
         }
 
         public async Task<StorageId> GetNextStorageId(string apiKey, int accountId, int sellTokenId)
@@ -56,6 +66,16 @@ namespace FroggieBot
                 Console.WriteLine($"Error getting storage id: {httpException.Message}");
                 return null;
             }
+            catch (JsonReaderException sre)
+            {
+                Console.WriteLine($"Error getting storage id: {sre.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting storage id: {ex.Message}");
+                return null;
+            }
         }
 
         public async Task<OffchainFee> GetOffChainFeeNftTransfer(string apiKey, int accountId, int requestType, string amount)
@@ -73,7 +93,17 @@ namespace FroggieBot
             }
             catch (HttpRequestException httpException)
             {
-                Console.WriteLine($"Error getting off chain fee: {httpException.Message}");
+                Console.WriteLine($"Error getting off chain fee nft transfer: {httpException.Message}");
+                return null;
+            }
+            catch (JsonReaderException sre)
+            {
+                Console.WriteLine($"Error getting off chain fee nft transfer: {sre.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting off chain fee nft transfer: {ex.Message}");
                 return null;
             }
         }
@@ -109,6 +139,16 @@ namespace FroggieBot
                 Console.WriteLine($"Error submitting nft transfer: {httpException.Message}");
                 return null;
             }
+            catch (JsonReaderException sre)
+            {
+                Console.WriteLine($"Error submitting nft transfer: {sre.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error submitting nft transfer: {ex.Message}");
+                return null;
+            }
         }
 
         public async Task<EnsResult> GetHexAddress(string apiKey, string ens)
@@ -124,7 +164,17 @@ namespace FroggieBot
             }
             catch (HttpRequestException httpException)
             {
-                Console.WriteLine($"Error getting ens: {httpException.Message}");
+                Console.WriteLine($"Error getting hex address: {httpException.Message}");
+                return null;
+            }
+            catch (JsonReaderException sre)
+            {
+                Console.WriteLine($"Error getting hex address: {sre.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting hex address: {ex.Message}");
                 return null;
             }
         }
@@ -152,6 +202,16 @@ namespace FroggieBot
                 Console.WriteLine($"Error getting nft balance: {httpException.Message}");
                 return null;
             }
+            catch (JsonReaderException sre)
+            {
+                Console.WriteLine($"Error getting nft balance: {sre.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting nft balance: {ex.Message}");
+                return null;
+            }
         }
 
         public async Task<EnsResult> GetENS(string apiKey, string hexAddress)
@@ -168,6 +228,16 @@ namespace FroggieBot
             catch (HttpRequestException httpException)
             {
                 Console.WriteLine($"Error getting ens: {httpException.Message}");
+                return null;
+            }
+            catch (JsonReaderException sre)
+            {
+                Console.WriteLine($"Error getting ens: {sre.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting ens: {ex.Message}");
                 return null;
             }
         }

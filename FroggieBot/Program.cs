@@ -13,10 +13,6 @@ IConfiguration config = new ConfigurationBuilder()
     .Build();
 Settings settings = config.GetRequiredSection("Settings").Get<Settings>();
 
-//Open AI settings
-Engine engine = new Engine("text-davinci-002") { Owner = "openai", Ready = true };
-OpenAIAPI openAI = new OpenAI_API.OpenAIAPI(settings.OpenAIKey, engine);
-
 var discord = new DiscordClient(new DiscordConfiguration()
 {
     Token = settings.DiscordToken,
@@ -34,7 +30,6 @@ new SlashCommandsConfiguration
     .AddSingleton<Random>()
     .AddScoped<SqlService>()
     .AddSingleton<Settings>(settings)
-    .AddSingleton<OpenAIAPI>(openAI)
     .AddSingleton<EthereumService>()
     .BuildServiceProvider()
 });
