@@ -132,154 +132,161 @@ namespace FroggieBot
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            if(ctx.Channel.Id != 996854318009438393 //market
-                || ctx.Channel.Id != 996888645384544436 //admin
-                || ctx.Channel.Id != 996854317833261166  //mod
-                || ctx.Channel.Id != 996876130739032196  //hackers den
-                || ctx.Channel.Id != 997178529328398377 //faq
-                || ctx.Channel.Id != 999035222135930920 //meta club
-                ) 
+            if (ctx.Channel.Id == 996854318009438393 //market
+                || ctx.Channel.Id == 996888645384544436 //admin
+                || ctx.Channel.Id == 996854317833261166  //mod
+                || ctx.Channel.Id == 996876130739032196  //hackers den
+                || ctx.Channel.Id == 997178529328398377 //faq
+                || ctx.Channel.Id == 999035222135930920 //meta club
+                )
+            {
+                int metaboyId;
+                bool canBeParsed = Int32.TryParse(id, out metaboyId);
+                if (canBeParsed)
+                {
+
+                    var ranking = Ranks.rankings.FirstOrDefault(x => x.Id == metaboyId);
+                    if (ranking == null)
+                    {
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Not a valid MetaBoy id!"));
+                        return;
+                    }
+                    else
+                    {
+                        string contractAddress = ranking.MarketplaceUrl.Replace("https://nft.gamestop.com/token/", "").Split('/')[0];
+                        string tokenId = ranking.MarketplaceUrl.Replace("https://nft.gamestop.com/token/", "").Split('/')[1];
+
+                        var gamestopNFTData = await GamestopService.GetNftData(tokenId, contractAddress);
+                        var gamestopNFTOrders = await GamestopService.GetNftOrders(gamestopNFTData.nftId);
+
+                        var rarityTier = RarityTierConverter.RarityTier(ranking.Rank, 8661);
+
+                        var embedColour = "";
+
+                        switch (rarityTier)
+                        {
+                            case "Common":
+                                embedColour = "#FFFFFF"; //white
+                                break;
+                            case "Uncommon":
+                                embedColour = "#1EFF00"; //green
+                                break;
+                            case "Rare":
+                                embedColour = "#0070DD"; //blue
+                                break;
+                            case "Epic":
+                                embedColour = "#A335EE"; //purple
+                                break;
+                            case "Legendary":
+                                embedColour = "#FF8000"; //orange
+                                break;
+                            case "Mythical":
+                                embedColour = "#E6CC80"; //light gold
+                                break;
+                            case "Transcendent":
+                                embedColour = "#00CCFF"; //cyan
+                                break;
+                            case "Godlike":
+                                embedColour = "#FD0000"; //gme red
+                                break;
+                        }
+
+                        var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboys/full/{metaboyId}.gif";
+                        var embed = new DiscordEmbedBuilder()
+                        {
+                            Title = $"Metaboy #{metaboyId}",
+                            Url = ranking.MarketplaceUrl,
+                            Color = new DiscordColor(embedColour)
+                        };
+                        embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail() { Url = imageUrl, Height = 256, Width = 256 };
+                        embed.AddField("Rank", ranking.Rank.ToString());
+
+                        if (gamestopNFTOrders != null && gamestopNFTOrders.Count > 0)
+                        {
+                            var gamestopNFTOrder = gamestopNFTOrders[0];
+                            var salePriceText = "";
+                            if (gamestopNFTOrder.buyTokenId == 0)
+                            {
+                                salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} ETH";
+                            }
+                            else if (gamestopNFTOrder.buyTokenId == 1)
+                            {
+                                salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} LRC";
+                            }
+                            embed.AddField("List Price", salePriceText);
+                        }
+                        else if (gamestopNFTOrders != null && gamestopNFTOrders.Count == 0)
+                        {
+                            embed.AddField("List Price", "Not Listed!");
+                        }
+
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                        return;
+
+                    }
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Not a valid MetaBoy id!"));
+                    return;
+                }
+            }
+            else
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("This command is not enabled in this channel"));
                 return;
             }
 
-            int metaboyId;
-            bool canBeParsed = Int32.TryParse(id, out metaboyId);
-            if (canBeParsed)
-            {
 
-                var ranking = Ranks.rankings.FirstOrDefault(x => x.Id == metaboyId);
-                if (ranking == null)
-                {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Not a valid MetaBoy id!"));
-                    return;
-                }
-                else
-                {
-                    string contractAddress = ranking.MarketplaceUrl.Replace("https://nft.gamestop.com/token/", "").Split('/')[0];
-                    string tokenId = ranking.MarketplaceUrl.Replace("https://nft.gamestop.com/token/", "").Split('/')[1];
-
-                    var gamestopNFTData = await GamestopService.GetNftData(tokenId, contractAddress);
-                    var gamestopNFTOrders = await GamestopService.GetNftOrders(gamestopNFTData.nftId);
-
-                    var rarityTier = RarityTierConverter.RarityTier(ranking.Rank, 8661);
-
-                    var embedColour = "";
-
-                    switch (rarityTier)
-                    {
-                        case "Common":
-                            embedColour = "#FFFFFF"; //white
-                            break;
-                        case "Uncommon":
-                            embedColour = "#1EFF00"; //green
-                            break;
-                        case "Rare":
-                            embedColour = "#0070DD"; //blue
-                            break;
-                        case "Epic":
-                            embedColour = "#A335EE"; //purple
-                            break;
-                        case "Legendary":
-                            embedColour = "#FF8000"; //orange
-                            break;
-                        case "Mythical":
-                            embedColour = "#E6CC80"; //light gold
-                            break;
-                        case "Transcendent":
-                            embedColour = "#00CCFF"; //cyan
-                            break;
-                        case "Godlike":
-                            embedColour = "#FD0000"; //gme red
-                            break;
-                    }
-
-                    var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboys/full/{metaboyId}.gif";
-                    var embed = new DiscordEmbedBuilder()
-                    {
-                        Title = $"Metaboy #{metaboyId}",
-                        Url = ranking.MarketplaceUrl,
-                        Color = new DiscordColor(embedColour)
-                    };
-                    embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail() { Url = imageUrl, Height = 256, Width = 256 };
-                    embed.AddField("Rank", ranking.Rank.ToString());
-
-                    if (gamestopNFTOrders != null && gamestopNFTOrders.Count > 0)
-                    {
-                        var gamestopNFTOrder = gamestopNFTOrders[0];
-                        var salePriceText = "";
-                        if (gamestopNFTOrder.buyTokenId == 0)
-                        {
-                            salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} ETH";
-                        }
-                        else if (gamestopNFTOrder.buyTokenId == 1)
-                        {
-                            salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} LRC";
-                        }
-                        embed.AddField("List Price", salePriceText);
-                    }
-                    else if (gamestopNFTOrders != null && gamestopNFTOrders.Count == 0)
-                    {
-                        embed.AddField("List Price", "Not Listed!");
-                    }
-
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
-                    return;
-
-                }
-            }
-            else
-            {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Not a valid MetaBoy id!"));
-                return;
-            }
         }
 
         [SlashCommand("show", "Show a Metaboy")]
         public async Task ShowCommand(InteractionContext ctx, [Option("id", "The MetaBoy ID to Lookup, example: 420")] string id)
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-            if (ctx.Channel.Id != 996875233032155197 //Show and tell
-                 || ctx.Channel.Id != 996888645384544436 //admin
-                || ctx.Channel.Id != 996854317833261166  //mod
-                || ctx.Channel.Id != 996876130739032196  //hackers den
-                || ctx.Channel.Id != 997178529328398377 //faq
-                || ctx.Channel.Id != 999035222135930920 //meta club
-
+            if (ctx.Channel.Id == 996875233032155197 //Show and tell
+                || ctx.Channel.Id == 996888645384544436 //admin
+                || ctx.Channel.Id == 996854317833261166  //mod
+                || ctx.Channel.Id == 996876130739032196  //hackers den
+                || ctx.Channel.Id == 997178529328398377 //faq
+                || ctx.Channel.Id == 999035222135930920 //meta club
                 )
             {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("This command is not enabled in this channel"));
-                return;
-            }
-            int metaboyId;
-            bool canBeParsed = Int32.TryParse(id, out metaboyId);
-            if (canBeParsed)
-            {
-                var ranking = Ranks.rankings.FirstOrDefault(x => x.Id == metaboyId);
-                if (ranking == null)
+                int metaboyId;
+                bool canBeParsed = Int32.TryParse(id, out metaboyId);
+                if (canBeParsed)
                 {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Not a valid MetaBoy id!"));
-                    return;
+                    var ranking = Ranks.rankings.FirstOrDefault(x => x.Id == metaboyId);
+                    if (ranking == null)
+                    {
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Not a valid MetaBoy id!"));
+                        return;
+                    }
+                    else
+                    {
+                        var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboys/full/{metaboyId}.gif";
+                        var embed = new DiscordEmbedBuilder()
+                        {
+                            Title = $"Metaboy #{metaboyId}",
+                            Url = ranking.MarketplaceUrl,
+                            ImageUrl = imageUrl
+                        };
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                        return;
+                    }
                 }
                 else
                 {
-                    var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboys/full/{metaboyId}.gif";
-                    var embed = new DiscordEmbedBuilder()
-                    {
-                        Title = $"Metaboy #{metaboyId}",
-                        Url = ranking.MarketplaceUrl,
-                        ImageUrl = imageUrl
-                    };
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Not a valid MetaBoy id!"));
                     return;
                 }
             }
             else
             {
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Not a valid MetaBoy id!"));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("This command is not enabled in this channel"));
                 return;
             }
+
 
         }
 
@@ -288,49 +295,52 @@ namespace FroggieBot
         {
             await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-            if (ctx.Channel.Id != 996854318009438390 //General 
-                || ctx.Channel.Id != 996854318009438393 //Market
-                || ctx.Channel.Id != 996888645384544436 //admin
-                || ctx.Channel.Id != 996854317833261166  //mod
-                || ctx.Channel.Id != 996876130739032196  //hackers den
-                || ctx.Channel.Id != 997178529328398377 //faq
-                || ctx.Channel.Id != 999035222135930920 //meta club
-                ) 
+            if (ctx.Channel.Id == 996854318009438390 //General 
+                || ctx.Channel.Id == 996854318009438393 //Market
+                || ctx.Channel.Id == 996888645384544436 //admin
+                || ctx.Channel.Id == 996854317833261166  //mod
+                || ctx.Channel.Id == 996876130739032196  //hackers den
+                || ctx.Channel.Id == 997178529328398377 //faq
+                || ctx.Channel.Id == 999035222135930920 //meta club
+                )
+            {
+                var gamestopNFTData = await GamestopService.GetNftData("0xd8ada153c760d4acce89d9e612939ea7cc4f0cfc43707e423eb16476e293ff95", "0x1d006a27bd82e10f9194d30158d91201e9930420");
+                var gamestopNFTOrders = await GamestopService.GetNftOrders(gamestopNFTData.nftId);
+                var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboyhonorary/full/astroboy.gif";
+                var embed = new DiscordEmbedBuilder()
+                {
+                    Title = $"AstroBoy",
+                    Color = new DiscordColor("#FD0000"),
+                    Url = "https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0xd8ada153c760d4acce89d9e612939ea7cc4f0cfc43707e423eb16476e293ff95"
+                };
+                embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail() { Url = imageUrl, Height = 256, Width = 256 };
+                if (gamestopNFTOrders != null && gamestopNFTOrders.Count > 0)
+                {
+                    var gamestopNFTOrder = gamestopNFTOrders.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText = "";
+                    if (gamestopNFTOrder.buyTokenId == 0)
+                    {
+                        salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder.buyTokenId == 1)
+                    {
+                        salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("List Price", salePriceText);
+                }
+                else if (gamestopNFTOrders != null && gamestopNFTOrders.Count == 0)
+                {
+                    embed.AddField("List Price", "Not Listed!");
+                }
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                return;
+            }
+            else
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("This command is not enabled in this channel!"));
                 return;
             }
 
-            var gamestopNFTData = await GamestopService.GetNftData("0xd8ada153c760d4acce89d9e612939ea7cc4f0cfc43707e423eb16476e293ff95", "0x1d006a27bd82e10f9194d30158d91201e9930420");
-            var gamestopNFTOrders = await GamestopService.GetNftOrders(gamestopNFTData.nftId);
-            var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboyhonorary/full/astroboy.gif";
-            var embed = new DiscordEmbedBuilder()
-            {
-                Title = $"AstroBoy",
-                Color = new DiscordColor("#FD0000"),
-                Url = "https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0xd8ada153c760d4acce89d9e612939ea7cc4f0cfc43707e423eb16476e293ff95"
-            };
-            embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail() { Url = imageUrl, Height = 256, Width = 256 };
-            if (gamestopNFTOrders != null && gamestopNFTOrders.Count > 0)
-            {
-                var gamestopNFTOrder = gamestopNFTOrders.OrderBy(x=> Double.Parse(x.pricePerNft)).ToList()[0];
-                var salePriceText = "";
-                if (gamestopNFTOrder.buyTokenId == 0)
-                {
-                    salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} ETH";
-                }
-                else if (gamestopNFTOrder.buyTokenId == 1)
-                {
-                    salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} LRC";
-                }
-                embed.AddField("List Price", salePriceText);
-            }
-            else if (gamestopNFTOrders != null && gamestopNFTOrders.Count == 0)
-            {
-                embed.AddField("List Price", "Not Listed!");
-            }
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
-            return;
         }
 
     }
