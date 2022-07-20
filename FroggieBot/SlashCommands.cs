@@ -155,25 +155,25 @@ namespace FroggieBot
                     switch (rarityTier)
                     {
                         case "Common":
-                            embedColour = "#9D9D9D"; //gray
-                            break;
-                        case "Uncommon":
                             embedColour = "#FFFFFF"; //white
                             break;
-                        case "Rare":
+                        case "Uncommon":
                             embedColour = "#1EFF00"; //green
                             break;
-                        case "Epic":
+                        case "Rare":
                             embedColour = "#0070DD"; //blue
                             break;
-                        case "Legendary":
+                        case "Epic":
                             embedColour = "#A335EE"; //purple
                             break;
-                        case "Mythical":
+                        case "Legendary":
                             embedColour = "#FF8000"; //orange
                             break;
-                        case "Transcendent":
+                        case "Mythical":
                             embedColour = "#E6CC80"; //light gold
+                            break;
+                        case "Transcendent":
+                            embedColour = "#00CCFF"; //cyan
                             break;
                         case "Godlike":
                             embedColour = "#FD0000"; //gme red
