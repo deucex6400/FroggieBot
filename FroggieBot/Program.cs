@@ -2,9 +2,11 @@
 using DSharpPlus.EventArgs;
 using DSharpPlus.SlashCommands;
 using FroggieBot;
+using FroggieBot.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using OpenAI_API;
 
 IConfiguration config = new ConfigurationBuilder()
@@ -12,6 +14,14 @@ IConfiguration config = new ConfigurationBuilder()
     .AddEnvironmentVariables()
     .Build();
 Settings settings = config.GetRequiredSection("Settings").Get<Settings>();
+
+Ranks? ranks;
+
+using (StreamReader r = new StreamReader("ranks.json"))
+{
+    string json = r.ReadToEnd();
+    ranks = JsonConvert.DeserializeObject<Ranks>(json);
+}
 
 var discord = new DiscordClient(new DiscordConfiguration()
 {
@@ -31,8 +41,10 @@ new SlashCommandsConfiguration
     .AddScoped<SqlService>()
     .AddSingleton<Settings>(settings)
     .AddSingleton<EthereumService>()
+    .AddSingleton<GamestopService>()
     .BuildServiceProvider()
 });
+SlashCommands.Ranks = ranks;
 slash.RegisterCommands<SlashCommands>(settings.DiscordServerId);
 
 await discord.ConnectAsync();

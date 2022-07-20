@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
+using FroggieBot.Models;
 using Nethereum.Signer;
 using Nethereum.Signer.EIP712;
 using Nethereum.Util;
@@ -29,6 +30,10 @@ namespace FroggieBot
         public EthereumService EthereumService { private get; set; }
 
         public EtherscanService EtherscanService { private get; set; }
+
+        public GamestopService GamestopService { private get; set; }
+
+        public static Ranks Ranks { private get; set; }
 
         [SlashCommand("mintfee", "Get current Loopring NFT Mint fee")]
         public async Task NftMintFeeCommand(InteractionContext ctx, [Option("amount", "mint amount")] string mintAmount = "1")
@@ -118,7 +123,104 @@ namespace FroggieBot
             {
                 await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Something went wrong with searching for the ENS! Try again later."));
             }
+        }
 
+        [SlashCommand("metaboy", "Show information on a MetaBoy")]
+        public async Task MetaboyCommand(InteractionContext ctx, [Option("id", "The MetaBoy ID to Lookup, example: 420")] string id)
+        {
+            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            int metaboyId;
+            bool canBeParsed = Int32.TryParse(id, out metaboyId);
+            if (canBeParsed)
+            {
+
+                var ranking = Ranks.rankings.FirstOrDefault(x => x.Id == metaboyId);
+                if (ranking == null)
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Not a valid MetaBoy id!"));
+                    return;
+                }
+                else
+                {
+                    string contractAddress = ranking.MarketplaceUrl.Replace("https://nft.gamestop.com/token/", "").Split('/')[0];
+                    string tokenId = ranking.MarketplaceUrl.Replace("https://nft.gamestop.com/token/", "").Split('/')[1];
+
+                    var gamestopNFTData = await GamestopService.GetNftData(tokenId, contractAddress);
+                    var gamestopNFTOrders = await GamestopService.GetNftOrders(gamestopNFTData.nftId);
+
+                    var rarityTier = RarityTierConverter.RarityTier(ranking.Rank, 8661);
+
+                    var embedColour = "";
+
+                    switch (rarityTier)
+                    {
+                        case "Common":
+                            embedColour = "#9D9D9D"; //gray
+                            break;
+                        case "Uncommon":
+                            embedColour = "#FFFFFF"; //white
+                            break;
+                        case "Rare":
+                            embedColour = "#1EFF00"; //green
+                            break;
+                        case "Epic":
+                            embedColour = "#0070DD"; //blue
+                            break;
+                        case "Legendary":
+                            embedColour = "#A335EE"; //purple
+                            break;
+                        case "Mythical":
+                            embedColour = "#FF8000"; //orange
+                            break;
+                        case "Transcendent":
+                            embedColour = "#E6CC80"; //light gold
+                            break;
+                        case "Godlike":
+                            embedColour = "#FD0000"; //gme red
+                            break;
+                    }
+
+                    var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboys/full/{metaboyId}.gif";
+                    var embed = new DiscordEmbedBuilder()
+                    {
+                        Title = $"Metaboy #{metaboyId}",
+                        ImageUrl = imageUrl,
+                        Url = ranking.MarketplaceUrl,
+                        Color = new DiscordColor(embedColour)
+                    };
+
+                    embed.AddField("Rank", ranking.Rank.ToString(), true);
+                    embed.AddField("Rarity Score", ranking.RarityScore.ToString(), true);
+
+                    if(gamestopNFTOrders != null && gamestopNFTOrders.Count > 0)
+                    {
+                        var gamestopNFTOrder = gamestopNFTOrders[0];
+                        var salePriceText = "";
+                        if(gamestopNFTOrder.buyTokenId == 0)
+                        {
+                            salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} ETH";
+                        }
+                        else if(gamestopNFTOrder.buyTokenId == 1)
+                        {
+                            salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} LRC";
+                        }
+                        embed.AddField("List Price", salePriceText, true);
+                    }
+                    else if(gamestopNFTOrders != null && gamestopNFTOrders.Count == 0)
+                    {
+                        embed.AddField("List Price", "Not Listed!");
+                    }
+
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                    return;
+
+                }
+            }
+            else
+            {
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Not a valid MetaBoy id!"));
+                return;
+            }
         }
 
         /*
@@ -388,5 +490,5 @@ namespace FroggieBot
         */
 
     }
-    
+
 }
