@@ -138,6 +138,7 @@ namespace FroggieBot
                 || ctx.Channel.Id == 996876130739032196  //hackers den
                 || ctx.Channel.Id == 997178529328398377 //faq
                 || ctx.Channel.Id == 999035222135930920 //meta club
+                || ctx.Channel.Id == 933963130197917698 //fudgeys fun house
                 )
             {
                 int metaboyId;
@@ -203,7 +204,7 @@ namespace FroggieBot
 
                         if (gamestopNFTOrders != null && gamestopNFTOrders.Count > 0)
                         {
-                            var gamestopNFTOrder = gamestopNFTOrders[0];
+                            var gamestopNFTOrder = gamestopNFTOrders.OrderByDescending(x=> x.createdAt).ToList().FirstOrDefault();
                             var salePriceText = "";
                             if (gamestopNFTOrder.buyTokenId == 0)
                             {
@@ -250,6 +251,7 @@ namespace FroggieBot
                 || ctx.Channel.Id == 996876130739032196  //hackers den
                 || ctx.Channel.Id == 997178529328398377 //faq
                 || ctx.Channel.Id == 999035222135930920 //meta club
+                || ctx.Channel.Id == 933963130197917698 //fudgeys fun house
                 )
             {
                 int metaboyId;
@@ -264,12 +266,45 @@ namespace FroggieBot
                     }
                     else
                     {
+
+                        var rarityTier = RarityTierConverter.RarityTier(ranking.Rank, 8661);
+
+                        var embedColour = "";
+
+                        switch (rarityTier)
+                        {
+                            case "Common":
+                                embedColour = "#FFFFFF"; //white
+                                break;
+                            case "Uncommon":
+                                embedColour = "#1EFF00"; //green
+                                break;
+                            case "Rare":
+                                embedColour = "#0070DD"; //blue
+                                break;
+                            case "Epic":
+                                embedColour = "#A335EE"; //purple
+                                break;
+                            case "Legendary":
+                                embedColour = "#FF8000"; //orange
+                                break;
+                            case "Mythical":
+                                embedColour = "#E6CC80"; //light gold
+                                break;
+                            case "Transcendent":
+                                embedColour = "#00CCFF"; //cyan
+                                break;
+                            case "Godlike":
+                                embedColour = "#FD0000"; //gme red
+                                break;
+                        }
                         var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboys/full/{metaboyId}.gif";
                         var embed = new DiscordEmbedBuilder()
                         {
-                            Title = $"Metaboy #{metaboyId}",
+                            Title = $"Metaboy #{metaboyId}, Rank {ranking.Rank}",
                             Url = ranking.MarketplaceUrl,
-                            ImageUrl = imageUrl
+                            ImageUrl = imageUrl,
+                            Color = new DiscordColor(embedColour)
                         };
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                         return;
@@ -302,6 +337,7 @@ namespace FroggieBot
                 || ctx.Channel.Id == 996876130739032196  //hackers den
                 || ctx.Channel.Id == 997178529328398377 //faq
                 || ctx.Channel.Id == 999035222135930920 //meta club
+                || ctx.Channel.Id == 933963130197917698 //fudgeys fun house
                 )
             {
                 var gamestopNFTData = await GamestopService.GetNftData("0xd8ada153c760d4acce89d9e612939ea7cc4f0cfc43707e423eb16476e293ff95", "0x1d006a27bd82e10f9194d30158d91201e9930420");
