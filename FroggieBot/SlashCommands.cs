@@ -206,7 +206,7 @@ namespace FroggieBot
 
                         if (gamestopNFTOrders != null && gamestopNFTOrders.Count > 0)
                         {
-                            var gamestopNFTOrder = gamestopNFTOrders.OrderByDescending(x=> x.createdAt).ToList().FirstOrDefault();
+                            var gamestopNFTOrder = gamestopNFTOrders.OrderByDescending(x => x.createdAt).ToList().FirstOrDefault();
                             var salePriceText = "";
                             if (gamestopNFTOrder.buyTokenId == 0)
                             {
@@ -252,7 +252,7 @@ namespace FroggieBot
         [SlashCommand("show", "Show a Metaboy")]
         public async Task ShowCommand(InteractionContext ctx, [Option("id", "The MetaBoy ID to Lookup, example: 420")] string id)
         {
-    
+
             if (ctx.Channel.Id == 996875233032155197 //Show and tell
                 || ctx.Channel.Id == 996888645384544436 //admin
                 || ctx.Channel.Id == 996854317833261166  //mod
@@ -342,7 +342,7 @@ namespace FroggieBot
 
         }
 
-        [SlashCommand("astro", "Show information on AstroBoy")]
+        [SlashCommand("honorary", "Show information on Honorary")]
         public async Task AstroCommand(InteractionContext ctx)
         {
 
@@ -357,19 +357,47 @@ namespace FroggieBot
                 || ctx.Channel.Id == 933963130197917698 //fudgeys fun house
                 )
             {
-                await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-                var gamestopNFTData = await GamestopService.GetNftData("0xd8ada153c760d4acce89d9e612939ea7cc4f0cfc43707e423eb16476e293ff95", "0x1d006a27bd82e10f9194d30158d91201e9930420");
-                var gamestopNFTOrders = await GamestopService.GetNftOrders(gamestopNFTData.nftId);
-                var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboyhonorary/full/astroboy.gif";
-                var embed = new DiscordEmbedBuilder()
+                try
                 {
-                    Title = $"AstroBoy",
-                    Color = new DiscordColor("#FD0000"),
-                    Url = "https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0xd8ada153c760d4acce89d9e612939ea7cc4f0cfc43707e423eb16476e293ff95"
-                };
-                embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail() { Url = imageUrl, Height = 256, Width = 256 };
-                if (gamestopNFTOrders != null && gamestopNFTOrders.Count > 0)
-                {
+                    await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+                    //astro
+                    var gamestopNFTData = await GamestopService.GetNftData("0xd8ada153c760d4acce89d9e612939ea7cc4f0cfc43707e423eb16476e293ff95", "0x1d006a27bd82e10f9194d30158d91201e9930420");
+                    var gamestopNFTOrders = await GamestopService.GetNftOrders(gamestopNFTData.nftId);
+
+                    //monkey
+                    var gamestopNFTData2 = await GamestopService.GetNftData("0x930ff4e66577c22563dc8060e0a48ab4b6f0fcebdffa42a03e8a579c5d6b1503", "0x1d006a27bd82e10f9194d30158d91201e9930420");
+                    var gamestopNFTOrders2 = await GamestopService.GetNftOrders(gamestopNFTData2.nftId);
+
+                    //froggi
+                    var gamestopNFTData3 = await GamestopService.GetNftData("0x8ed8173e66a07c49391b5aee318777258f6a96eafbb0daaf3f7f884a52a33ba4", "0x1d006a27bd82e10f9194d30158d91201e9930420");
+                    var gamestopNFTOrders3 = await GamestopService.GetNftOrders(gamestopNFTData3.nftId);
+
+                    //ordinary adam
+                    var gamestopNFTData4 = await GamestopService.GetNftData("0x5573521b417e6757c77099578e791f889f0b7495eaf5b29093b2902bfe6813cf", "0x1d006a27bd82e10f9194d30158d91201e9930420");
+                    var gamestopNFTOrders4 = await GamestopService.GetNftOrders(gamestopNFTData4.nftId);
+
+                    //british
+                    var gamestopNFTData5 = await GamestopService.GetNftData("0x445671e5df1feac09afb4a92f5b2cb9337dbd94abe2c6b55a0855e03cbc4653b", "0x1d006a27bd82e10f9194d30158d91201e9930420");
+                    var gamestopNFTOrders5 = await GamestopService.GetNftOrders(gamestopNFTData5.nftId);
+
+                    //reporter
+                    var gamestopNFTData6 = await GamestopService.GetNftData("0xb34b96e2294f7b79b6af3f576758febcee688977054438328fcf3e76e9fb9742", "0x1d006a27bd82e10f9194d30158d91201e9930420");
+                    var gamestopNFTOrders6 = await GamestopService.GetNftOrders(gamestopNFTData6.nftId);
+
+                    //rockstar
+                    var gamestopNFTData7 = await GamestopService.GetNftData("0xb3ca435a05ac1f67102258a14d1ac4687e4a00ca8fd838d7b0faf8ac994eb839", "0x1d006a27bd82e10f9194d30158d91201e9930420");
+                    var gamestopNFTOrders7 = await GamestopService.GetNftOrders(gamestopNFTData7.nftId);
+
+                    var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboyhonorary/full/astroboy.gif";
+                    var embed = new DiscordEmbedBuilder()
+                    {
+                        Title = $"Honorary",
+                        Color = new DiscordColor("#FD0000"),
+                        Url = "https://nft.gamestop.com/collection/MetaBoyHonorary"
+                    };
+                    embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail() { Url = imageUrl, Height = 256, Width = 256 };
+
                     var gamestopNFTOrder = gamestopNFTOrders.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
                     var salePriceText = "";
                     if (gamestopNFTOrder.buyTokenId == 0)
@@ -380,14 +408,98 @@ namespace FroggieBot
                     {
                         salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} LRC";
                     }
-                    embed.AddField("List Price", salePriceText);
+                    embed.AddField("AstroBoy List Price", $"[{salePriceText}](https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0xd8ada153c760d4acce89d9e612939ea7cc4f0cfc43707e423eb16476e293ff95)", true);
+
+                    var gamestopNFTOrder5 = gamestopNFTOrders5.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText5 = "";
+                    if (gamestopNFTOrder5.buyTokenId == 0)
+                    {
+                        salePriceText5 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder5.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder5.buyTokenId == 1)
+                    {
+                        salePriceText5 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder5.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("BritishBoy List Price", $"[{salePriceText5}](https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0x445671e5df1feac09afb4a92f5b2cb9337dbd94abe2c6b55a0855e03cbc4653b)");
+
+                    var gamestopNFTOrder3 = gamestopNFTOrders3.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText3 = "";
+                    if (gamestopNFTOrder3.buyTokenId == 0)
+                    {
+                        salePriceText3 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder3.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder3.buyTokenId == 1)
+                    {
+                        salePriceText3 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder3.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("FroggiBoy List Price", $"[{salePriceText3}](https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0x8ed8173e66a07c49391b5aee318777258f6a96eafbb0daaf3f7f884a52a33ba4)");
+
+                    var gamestopNFTOrder2 = gamestopNFTOrders2.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText2 = "";
+                    if (gamestopNFTOrder2.buyTokenId == 0)
+                    {
+                        salePriceText2 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder2.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder2.buyTokenId == 1)
+                    {
+                        salePriceText2 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder2.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("MonkeyBoy List Price", $"[{salePriceText2}](https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0x930ff4e66577c22563dc8060e0a48ab4b6f0fcebdffa42a03e8a579c5d6b1503)");
+
+                    var gamestopNFTOrder4 = gamestopNFTOrders4.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText4 = "";
+                    if (gamestopNFTOrder4.buyTokenId == 0)
+                    {
+                        salePriceText4 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder4.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder4.buyTokenId == 1)
+                    {
+                        salePriceText4 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder4.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("OrdinaryAdamBoy List Price", $"[{salePriceText4}](https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0x5573521b417e6757c77099578e791f889f0b7495eaf5b29093b2902bfe6813cf)");
+
+                    var gamestopNFTOrder6 = gamestopNFTOrders6.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText6 = "";
+                    if (gamestopNFTOrder6.buyTokenId == 0)
+                    {
+                        salePriceText6 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder6.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder6.buyTokenId == 1)
+                    {
+                        salePriceText6 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder6.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("ReporterBoy List Price", $"[{salePriceText6}](https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0xb34b96e2294f7b79b6af3f576758febcee688977054438328fcf3e76e9fb9742)");
+
+                    var gamestopNFTOrder7 = gamestopNFTOrders7.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText7 = "";
+                    if (gamestopNFTOrder7.buyTokenId == 0)
+                    {
+                        salePriceText7 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder7.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder7.buyTokenId == 1)
+                    {
+                        salePriceText7 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder7.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("RockstarBoy List Price", $"[{salePriceText7}](https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0xb3ca435a05ac1f67102258a14d1ac4687e4a00ca8fd838d7b0faf8ac994eb839)");
+
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                    return;
                 }
-                else if (gamestopNFTOrders != null && gamestopNFTOrders.Count == 0)
+                catch(Exception ex)
                 {
-                    embed.AddField("List Price", "Not Listed!");
+                    var embed = new DiscordEmbedBuilder()
+                    {
+                        Title = $"Honorary",
+                        Color = new DiscordColor("#FD0000"),
+                        Url = "https://nft.gamestop.com/collection/MetaBoyHonorary"
+                    };
+
+                    var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboyhonorary/full/astroboy.gif";
+                    embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail() { Url = imageUrl, Height = 256, Width = 256 };
+                    embed.AddField("Oops!", "Something went wrong!");
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                    return;
                 }
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
-                return;
             }
             else
             {
@@ -397,7 +509,6 @@ namespace FroggieBot
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
                 return;
             }
-
         }
 
     }
