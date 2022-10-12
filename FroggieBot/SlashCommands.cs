@@ -688,6 +688,8 @@ namespace FroggieBot
                     //astro
                     var gamestopNFTData = await GamestopService.GetNftData("0x2a669f944bb80efdcdd1c86ad1fc340a4803210dce371d03d00f450a33ec11c6", "0x1d006a27bd82e10f9194d30158d91201e9930420");
                     var gamestopNFTOrders = await GamestopService.GetNftOrders(gamestopNFTData.nftId);
+                    var gamestopNFTData2 = await GamestopService.GetNftData("0xd79e1ff7615e2826b2e4e29bbfd6cfa1d4109da4cbabf726b4690e1c9d1b411e", "0x1d006a27bd82e10f9194d30158d91201e9930420");
+                    var gamestopNFTOrders2 = await GamestopService.GetNftOrders(gamestopNFTData2.nftId);
 
                     var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboycelebratory/ethboy.gif";
                     var embed = new DiscordEmbedBuilder()
@@ -708,7 +710,20 @@ namespace FroggieBot
                     {
                         salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} LRC";
                     }
-                    embed.AddField("EthBoy List Price", $"[{salePriceText}](https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0x2a669f944bb80efdcdd1c86ad1fc340a4803210dce371d03d00f450a33ec11c6)", true);
+                    embed.AddField("EthBoy List Price", $"[{salePriceText}](https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0x2a669f944bb80efdcdd1c86ad1fc340a4803210dce371d03d00f450a33ec11c6)");
+
+                    var gamestopNFTOrder2 = gamestopNFTOrders2.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText2 = "";
+                    if (gamestopNFTOrder2.buyTokenId == 0)
+                    {
+                        salePriceText2 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder2.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder2.buyTokenId == 1)
+                    {
+                        salePriceText2 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder2.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("FighterBoy List Price", $"[{salePriceText2}](https://nft.gamestop.com/token/0x1d006a27bd82e10f9194d30158d91201e9930420/0xd79e1ff7615e2826b2e4e29bbfd6cfa1d4109da4cbabf726b4690e1c9d1b411e)");
+
 
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
                     return;
