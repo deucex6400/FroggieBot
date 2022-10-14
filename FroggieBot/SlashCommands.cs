@@ -511,6 +511,147 @@ namespace FroggieBot
             }
         }
 
+        [SlashCommand("gmerica", "Show information on GMErica")]
+        public async Task GMEricaCommand(InteractionContext ctx)
+        {
+
+
+            if (ctx.Channel.Id == 996854318009438390 //General 
+                || ctx.Channel.Id == 996854318009438393 //Market
+                || ctx.Channel.Id == 996888645384544436 //admin
+                || ctx.Channel.Id == 996854317833261166  //mod
+                || ctx.Channel.Id == 996876130739032196  //hackers den
+                || ctx.Channel.Id == 997178529328398377 //faq
+                || ctx.Channel.Id == 999035222135930920 //meta club
+                || ctx.Channel.Id == 933963130197917698 //fudgeys fun house
+                )
+            {
+                try
+                {
+                    await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+                    //boston
+                    var gamestopNFTData = await GamestopService.GetNftData("0x8c34436aa426f27077a6c9df5c314bd6013c85f3201d6ec3520a6cc0a706e271", "0x0c589fcd20f99a4a1fe031f50079cfc630015184");
+                    var gamestopNFTOrders = await GamestopService.GetNftOrders(gamestopNFTData.nftId);
+
+                    //canaveral
+                    var gamestopNFTData2 = await GamestopService.GetNftData("0x5fa20ebf94a504c98b09b4c9e14ad96644effc7e05c8009e7f1eacfe4d194ed2", "0x0c589fcd20f99a4a1fe031f50079cfc630015184");
+                    var gamestopNFTOrders2 = await GamestopService.GetNftOrders(gamestopNFTData2.nftId);
+
+                    //hollywood
+                    var gamestopNFTData3 = await GamestopService.GetNftData("0xe83cbd0ce56c8d986b31075e3bcd9f5974b76d06d48c877a4e5faaac70264636", "0x0c589fcd20f99a4a1fe031f50079cfc630015184");
+                    var gamestopNFTOrders3 = await GamestopService.GetNftOrders(gamestopNFTData3.nftId);
+
+                    //nyc
+                    var gamestopNFTData4 = await GamestopService.GetNftData("0x8d3e53420e7f15a1ac5b54aed3eaa429b5e75046abb1af99d5b5040ed1beea0a", "0x0c589fcd20f99a4a1fe031f50079cfc630015184");
+                    var gamestopNFTOrders4 = await GamestopService.GetNftOrders(gamestopNFTData4.nftId);
+
+                    //seattle
+                    var gamestopNFTData5 = await GamestopService.GetNftData("0x9bf31ca7985ac20239c026ae15b4c9241aaf06cab6365d92f98c99b34b409d60", "0x0c589fcd20f99a4a1fe031f50079cfc630015184");
+                    var gamestopNFTOrders5 = await GamestopService.GetNftOrders(gamestopNFTData5.nftId);
+
+
+                    var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboygmerica/gmerica.gif";
+                    var embed = new DiscordEmbedBuilder()
+                    {
+                        Title = $"GMErica",
+                        Color = new DiscordColor("#FD0000"),
+                        Url = "https://nft.gamestop.com/collection/Gmricaxmetaboy"
+                    };
+                    embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail() { Url = imageUrl, Height = 256, Width = 256 };
+
+                    var gamestopNFTOrder = gamestopNFTOrders.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText = "";
+                    if (gamestopNFTOrder.buyTokenId == 0)
+                    {
+                        salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder.buyTokenId == 1)
+                    {
+                        salePriceText = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("Boston List Price", $"[{salePriceText}](https://nft.gamestop.com/token/0x0c589fcd20f99a4a1fe031f50079cfc630015184/0x8c34436aa426f27077a6c9df5c314bd6013c85f3201d6ec3520a6cc0a706e271)", true);
+
+                    var gamestopNFTOrder2 = gamestopNFTOrders2.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText2 = "";
+                    if (gamestopNFTOrder2.buyTokenId == 0)
+                    {
+                        salePriceText2 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder2.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder2.buyTokenId == 1)
+                    {
+                        salePriceText2 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder2.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("Cape Canaveral List Price", $"[{salePriceText2}](https://nft.gamestop.com/token/0x0c589fcd20f99a4a1fe031f50079cfc630015184/0x5fa20ebf94a504c98b09b4c9e14ad96644effc7e05c8009e7f1eacfe4d194ed2)");
+
+                    var gamestopNFTOrder3 = gamestopNFTOrders3.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText3 = "";
+                    if (gamestopNFTOrder3.buyTokenId == 0)
+                    {
+                        salePriceText3 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder3.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder3.buyTokenId == 1)
+                    {
+                        salePriceText3 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder3.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("Hollywood List Price", $"[{salePriceText3}](https://nft.gamestop.com/token/0x0c589fcd20f99a4a1fe031f50079cfc630015184/0xe83cbd0ce56c8d986b31075e3bcd9f5974b76d06d48c877a4e5faaac70264636)");
+
+                    var gamestopNFTOrder4 = gamestopNFTOrders4.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText4 = "";
+                    if (gamestopNFTOrder4.buyTokenId == 0)
+                    {
+                        salePriceText4 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder4.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder4.buyTokenId == 1)
+                    {
+                        salePriceText4 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder4.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("NYC List Price", $"[{salePriceText4}](https://nft.gamestop.com/token/0x0c589fcd20f99a4a1fe031f50079cfc630015184/0x8d3e53420e7f15a1ac5b54aed3eaa429b5e75046abb1af99d5b5040ed1beea0a)");
+
+
+                    var gamestopNFTOrder5 = gamestopNFTOrders5.OrderBy(x => Double.Parse(x.pricePerNft)).ToList()[0];
+                    var salePriceText5 = "";
+                    if (gamestopNFTOrder5.buyTokenId == 0)
+                    {
+                        salePriceText5 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder5.pricePerNft), 18)} ETH";
+                    }
+                    else if (gamestopNFTOrder5.buyTokenId == 1)
+                    {
+                        salePriceText5 = $"{TokenAmountConverter.ToString(Double.Parse(gamestopNFTOrder5.pricePerNft), 18)} LRC";
+                    }
+                    embed.AddField("Seattle List Price", $"[{salePriceText5}](https://nft.gamestop.com/token/0x0c589fcd20f99a4a1fe031f50079cfc630015184/0x9bf31ca7985ac20239c026ae15b4c9241aaf06cab6365d92f98c99b34b409d60)");
+
+  
+  
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    var embed = new DiscordEmbedBuilder()
+                    {
+                        Title = $"GMErica",
+                        Color = new DiscordColor("#FD0000"),
+                        Url = "https://nft.gamestop.com/collection/Gmricaxmetaboy"
+                    };
+
+                    var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboygmerica/gmerica.gif";
+                    embed.Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail() { Url = imageUrl, Height = 256, Width = 256 };
+                    embed.AddField("Oops!", "Something went wrong!");
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                    return;
+                }
+            }
+            else
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("This command is not enabled in this channel!")
+                .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+        }
+
         [SlashCommand("airdrop", "Show information on Airdrop")]
         public async Task AirdropCommand(InteractionContext ctx)
         {
