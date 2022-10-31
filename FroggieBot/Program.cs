@@ -3,6 +3,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.SlashCommands;
 using FroggieBot;
 using FroggieBot.Models;
+using FroggieBot.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -42,8 +43,9 @@ new SlashCommandsConfiguration
     .AddSingleton<Settings>(settings)
     .AddSingleton<EthereumService>()
     .AddSingleton<GamestopService>()
+    .AddSingleton<MetaBoyApiService>()
     .BuildServiceProvider()
-});
+}); ;
 SlashCommands.Ranks = ranks;
 slash.RegisterCommands<SlashCommands>(settings.DiscordServerId);
 
