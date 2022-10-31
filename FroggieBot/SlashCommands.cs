@@ -825,7 +825,7 @@ namespace FroggieBot
                 }
                 catch (Exception ex)
                 {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Something went wrong! Try again later...");
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Something went wrong! Try again later..."));
                     return;
                 }
             }
