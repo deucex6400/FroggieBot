@@ -809,7 +809,7 @@ namespace FroggieBot
             }
         }
 
-        [SlashCommand("claim", "Claim NFTs(if eligible")]
+        [SlashCommand("claim", "Claim NFTs(if eligible)")]
         public async Task ClaimCommand(InteractionContext ctx, [Option("address", "The address in Hex Format for the claim, Example: 0x36Cd6b3b9329c04df55d55D41C257a5fdD387ACd")] string address)
         {
             string ethAddressRegexPattern = @"0x[a-fA-F0-9]{40}";
