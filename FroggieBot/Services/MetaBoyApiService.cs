@@ -46,6 +46,61 @@ namespace FroggieBot.Services
             }
         }
 
+        public async Task<string> GetRedeemable(string address, string nftData)
+        {
+            var request = new RestRequest("api/nft/redeemable");
+            request.AddParameter("address", address);
+            request.AddParameter("nftData", nftData);
+            try
+            {
+                var response = await _client.GetAsync(request);
+                var data = response.Content!;
+                return data;
+            }
+            catch (HttpRequestException httpException)
+            {
+                Console.WriteLine($"Error getting redeemable from metaboy api: {httpException.Message}");
+                return null;
+            }
+            catch (Newtonsoft.Json.JsonReaderException jSex)
+            {
+                Console.WriteLine($"Error deserialising redeemable json: {jSex.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting redeemable from metaboy api: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> AddClaim(NftReciever nftReciever)
+        {
+            var request = new RestRequest("api/nft/claim");
+            request.AddJsonBody(nftReciever);
+            try
+            {
+                var response = await _client.PostAsync(request);
+                var data = response.Content!;
+                return data;
+            }
+            catch (HttpRequestException httpException)
+            {
+                Console.WriteLine($"Error adding claim from metaboy api: {httpException.Message}");
+                return null;
+            }
+            catch (Newtonsoft.Json.JsonReaderException jSex)
+            {
+                Console.WriteLine($"Error adding claim json: {jSex.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding claim from metaboy api: {ex.Message}");
+                return null;
+            }
+        }
+
         public void Dispose()
         {
             _client?.Dispose();

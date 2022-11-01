@@ -6,6 +6,7 @@ using FroggieBot.Services;
 using Nethereum.Signer;
 using Nethereum.Signer.EIP712;
 using Nethereum.Util;
+using Newtonsoft.Json;
 using OpenAI_API;
 using PoseidonSharp;
 using System;
@@ -14,6 +15,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -808,31 +810,76 @@ namespace FroggieBot
         }
 
         [SlashCommand("claim", "Claim NFTs(if eligible")]
-        public async Task ClaimCommand(InteractionContext ctx, [Option("address", "The address for the claim, example: 0x36Cd6b3b9329c04df55d55D41C257a5fdD387ACd")] string address)
+        public async Task ClaimCommand(InteractionContext ctx, [Option("address", "The address in Hex Format for the claim, Example: 0x36Cd6b3b9329c04df55d55D41C257a5fdD387ACd")] string address)
         {
+            string ethAddressRegexPattern = @"0x[a-fA-F0-9]{40}";
+            address = address.Trim();
+            
+            var hexAddress = "";
+            foreach (Match m in Regex.Matches(address, ethAddressRegexPattern))
+            {
+                hexAddress = m.Value.ToLower();
+                break;
+            }
 
+            if (
+                 (ctx.Channel.Id == 933963130197917698 && !string.IsNullOrEmpty(hexAddress)) //fudgeys fun house
 
-            if (ctx.Channel.Id == 933963130197917698 //fudgeys fun house
                 )
             {
-                try
-                {
+                  
+                    List<NftReciever> nftRecievers = new List<NftReciever>();
                     await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
-                    var blah = await MetaBoyApiService.GetClaimable();
+                    
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Hold on let me check and see if there's any claims in the MetaLab waiting for you, I heard we just got in some fresh Experiments!"));
 
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{blah[0].nftData}"));
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Something went wrong! Try again later..."));
-                    return;
-                }
+                     var claimable = await MetaBoyApiService.GetClaimable();
+                    foreach(var claim in claimable)
+                    {
+                        var redeemable = await MetaBoyApiService.GetRedeemable(address, claim.nftData);
+                        int redeemableAmount;
+                        if (redeemable != null)
+                        {
+                            if (int.TryParse(JsonConvert.DeserializeObject<string>(redeemable), out redeemableAmount))
+                            {
+                                if (redeemableAmount > 0)
+                                {
+                                    nftRecievers.Add(new NftReciever() { Address = address, NftData = claim.nftData });
+                                }
+                            }
+                        }
+                    }
+
+                    if(nftRecievers.Count > 0)
+                    {
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"There's a claim here with your name on it! I made this one myself so I really hope you love it, Thank you for coming to my MetaLab!"));
+                        foreach(var nftReciever in nftRecievers)
+                        {
+                            await MetaBoyApiService.AddClaim(nftReciever);
+                        }
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I just hand delivered your claim to the teleporter and it should be there as soon as possible! Please check your hidden tab and if there's any problems please follow our <#1005560078813896824> instructions and I'll be with you as soon as I can."));
+                    }
+                    else
+                    {
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I'm sorry I can't seem to find a delivery here with your name on it, check back soon though! Take a look at our <#996854317833261174> for the most up to date info! That's where we keep the most valuable information."));
+                        return;
+                    }
+            }
+            else if (     
+                    (ctx.Channel.Id == 933963130197917698 && string.IsNullOrEmpty(hexAddress)) //fudgeys fun house
+
+                    )
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("Woah woah woah it's like you're speaking another language! My machines can't read that, please type it in Hex Format : Example: 0x36cd6b3b9329c04df55d55d41c257a5fdd387acd")
+                .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
             }
             else
             {
                 var builder = new DiscordInteractionResponseBuilder()
-                .WithContent("This command is not enabled in this channel!")
+                .WithContent("UNKNOWN COMMAND. For all claims please visit Gaia's MetaLab and Experimental Claim Section of the Discord. <#1036838681048264735>")
                 .AsEphemeral(true);
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
                 return;
