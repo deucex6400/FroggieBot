@@ -823,8 +823,9 @@ namespace FroggieBot
             }
 
             if (
-                 (ctx.Channel.Id == 933963130197917698 && !string.IsNullOrEmpty(hexAddress)) //fudgeys fun house
-
+                 (ctx.Channel.Id == 933963130197917698 && !string.IsNullOrEmpty(hexAddress)) //fudgeys fun house 
+                 ||
+                 (ctx.Channel.Id == 1036838681048264735 && !string.IsNullOrEmpty(hexAddress)) //metaboy gaias metalab
                 )
             {
                   
@@ -867,7 +868,8 @@ namespace FroggieBot
             }
             else if (     
                     (ctx.Channel.Id == 933963130197917698 && string.IsNullOrEmpty(hexAddress)) //fudgeys fun house
-
+                    ||
+                    (ctx.Channel.Id == 1036838681048264735 && string.IsNullOrEmpty(hexAddress)) //metaboy gais metalab
                     )
             {
                 var builder = new DiscordInteractionResponseBuilder()
@@ -879,7 +881,7 @@ namespace FroggieBot
             else
             {
                 var builder = new DiscordInteractionResponseBuilder()
-                .WithContent("UNKNOWN COMMAND. For all claims please visit Gaia's MetaLab and Experimental Claim Section of the Discord. <#1036838681048264735>")
+                .WithContent("UNKNOWN COMMAND. For all claims please visit Gaia's MetaLab and Experiments. <#1036838681048264735>")
                 .AsEphemeral(true);
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
                 return;
