@@ -163,7 +163,7 @@ namespace FroggieBot
 
         }
 
-        [SlashCommand("show", "Show a Metaboy")]
+        [SlashCommand("show", "Show a MetaBoy")]
         public async Task ShowCommand(InteractionContext ctx, [Option("id", "The MetaBoy ID to Lookup, example: 420")] string id)
         {
 
@@ -252,8 +252,99 @@ namespace FroggieBot
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
                 return;
             }
+        }
 
+        [SlashCommand("show_transparent", "Show a transparent MetaBoy")]
+        public async Task ShowTransparentCommand(InteractionContext ctx, [Option("id", "The MetaBoy ID to Lookup, example: 420")] string id)
+        {
 
+            if (ctx.Channel.Id == 996875233032155197 //Show and tell
+                || ctx.Channel.Id == 996888645384544436 //admin
+                || ctx.Channel.Id == 996854317833261166  //mod
+                || ctx.Channel.Id == 996876130739032196  //hackers den
+                || ctx.Channel.Id == 997178529328398377 //faq
+                || ctx.Channel.Id == 999035222135930920 //meta club
+                || ctx.Channel.Id == 933963130197917698 //fudgeys fun house
+                )
+            {
+                int metaboyId;
+                bool canBeParsed = Int32.TryParse(id, out metaboyId);
+                if (canBeParsed)
+                {
+                    var ranking = Ranks.rankings.FirstOrDefault(x => x.Id == metaboyId);
+                    if (ranking == null)
+                    {
+                        var builder = new DiscordInteractionResponseBuilder()
+                       .WithContent("Not a valid MetaBoy id!")
+                       .AsEphemeral(true);
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                        return;
+                    }
+                    else
+                    {
+                        await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+                        var rarityTier = RarityTierConverter.RarityTier(ranking.Rank, 8661);
+
+                        var embedColour = "";
+
+                        switch (rarityTier)
+                        {
+                            case "Common":
+                                embedColour = "#FFFFFF"; //white
+                                break;
+                            case "Uncommon":
+                                embedColour = "#1EFF00"; //green
+                                break;
+                            case "Rare":
+                                embedColour = "#0070DD"; //blue
+                                break;
+                            case "Epic":
+                                embedColour = "#A335EE"; //purple
+                                break;
+                            case "Legendary":
+                                embedColour = "#FF8000"; //orange
+                                break;
+                            case "Mythical":
+                                embedColour = "#E6CC80"; //light gold
+                                break;
+                            case "Transcendent":
+                                embedColour = "#00CCFF"; //cyan
+                                break;
+                            case "Godlike":
+                                embedColour = "#FD0000"; //gme red
+                                break;
+                        }
+                        var imageUrl = $"https://looprarecdn.azureedge.net/images/metaboy/transparent/{metaboyId}_cropped.gif";
+                        var thumbnailUrl = $"https://looprarecdn.azureedge.net/images/metaboy/transparent/{metaboyId}_tiny.gif";
+                        var embed = new DiscordEmbedBuilder()
+                        {
+                            Title = $"Metaboy #{metaboyId}, Rank {ranking.Rank}",
+                            Url = ranking.MarketplaceUrl,
+                            ImageUrl = imageUrl,
+                            Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail() { Url = thumbnailUrl },
+                            Color = new DiscordColor(embedColour)
+                        };  
+                        await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(embed));
+                        return;
+                    }
+                }
+                else
+                {
+                    var builder = new DiscordInteractionResponseBuilder()
+                    .WithContent("Not a valid MetaBoy id!")
+                    .AsEphemeral(true);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                    return;
+                }
+            }
+            else
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("This command is not enabled in this channel")
+                .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
         }
 
         [SlashCommand("honorary", "Show information on Honorary")]
