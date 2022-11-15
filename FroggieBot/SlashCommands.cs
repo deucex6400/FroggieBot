@@ -978,6 +978,128 @@ namespace FroggieBot
                 return;
             }
         }
+
+        [SlashCommand("claimable_show", "Show claimable NFTs")]
+        public async Task ShowClaimableCommand(InteractionContext ctx)
+        {
+
+            if (
+                 (ctx.Channel.Id == 933963130197917698) //fudgeys fun house 
+                 ||
+                 (ctx.Channel.Id == 1036838681048264735) //metaboy gaias metalab
+                )
+            {
+
+                List<Claimable> claimableList = new List<Claimable>();
+                await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Hold on checking the claimable NFTs..."));
+
+                var claimables = await SqlService.GetClaimable(Settings.SqlServerConnectionString);
+                foreach(var claimable in claimables)
+                {
+                    claimableList.Add(claimable);
+                }
+
+                if (claimableList.Count > 0)
+                {
+                    string text = "Here are the claimable NFTs I found:\n";
+                    foreach(var claimable in claimableList)
+                    {
+                        text += $"NFT Name: {claimable.nftName}, NFT Data: {claimable.nftData}\n";
+                    }
+                   await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{text}"));
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I'm sorry I can't see to find any claimable NFTs...You can add claimable nfts with the slash command: claimable_add"));
+                    return;
+                }
+            }
+            /*
+            else if (
+                    (ctx.Channel.Id == 933963130197917698 && string.IsNullOrEmpty(hexAddress)) //fudgeys fun house
+                    ||
+                    (ctx.Channel.Id == 1036838681048264735 && string.IsNullOrEmpty(hexAddress)) //metaboy gais metalab
+                    )
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("Woah woah woah it's like you're speaking another language! My machines can't read that, please type it in Hex Format : Example: 0x36cd6b3b9329c04df55d55d41c257a5fdd387acd")
+                .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+            */
+            else
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("UNKNOWN COMMAND. For all claims please visit Gaia's MetaLab and Experiments. <#1036838681048264735>")
+                .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+        }
+
+        [SlashCommand("claimable_add", "Add claimable NFTs")]
+        public async Task AddClaimableCommand(InteractionContext ctx)
+        {
+
+            if (
+                 (ctx.Channel.Id == 933963130197917698) //fudgeys fun house 
+                 ||
+                 (ctx.Channel.Id == 1036838681048264735) //metaboy gaias metalab
+                )
+            {
+
+                List<Claimable> claimableList = new List<Claimable>();
+                await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Hold on checking the claimable NFTs..."));
+
+                var claimables = await SqlService.GetClaimable(Settings.SqlServerConnectionString);
+                foreach (var claimable in claimables)
+                {
+                    claimableList.Add(claimable);
+                }
+
+                if (claimableList.Count > 0)
+                {
+                    string text = "Here are the claimable NFTs I found:\n";
+                    foreach (var claimable in claimableList)
+                    {
+                        text += $"NFT Name: {claimable.nftName}, NFT Data: {claimable.nftData}\n";
+                    }
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{text}"));
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I'm sorry I can't see to find any claimable NFTs...You can add claimable nfts with the slash command: claimable_add"));
+                    return;
+                }
+            }
+            /*
+            else if (
+                    (ctx.Channel.Id == 933963130197917698 && string.IsNullOrEmpty(hexAddress)) //fudgeys fun house
+                    ||
+                    (ctx.Channel.Id == 1036838681048264735 && string.IsNullOrEmpty(hexAddress)) //metaboy gais metalab
+                    )
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("Woah woah woah it's like you're speaking another language! My machines can't read that, please type it in Hex Format : Example: 0x36cd6b3b9329c04df55d55d41c257a5fdd387acd")
+                .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+            */
+            else
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("UNKNOWN COMMAND. For all claims please visit Gaia's MetaLab and Experiments. <#1036838681048264735>")
+                .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+        }
     }
 
 }
