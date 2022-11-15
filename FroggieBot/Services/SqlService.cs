@@ -63,7 +63,7 @@ namespace FroggieBot
             return result; //0 if something goes wrong
         }
 
-        public async Task<int> RemoveClaimable(string nftName, string nftData, string connectionString)
+        public async Task<int> RemoveClaimable(string nftData, string connectionString)
         {
             int result = 0;
             try
@@ -79,7 +79,7 @@ namespace FroggieBot
                         {
                             NftData = nftData
                         };
-                        result = await db.ExecuteAsync("DELETE from Claimable where nftdata = @NftData", deleteParameters); // 1 when inserted
+                        result = await db.ExecuteAsync("DELETE from Claimable where nftdata = @NftData", deleteParameters); // > 0 when removed
                     }
                     else
                     {

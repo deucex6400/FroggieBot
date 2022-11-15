@@ -1040,7 +1040,7 @@ namespace FroggieBot
             }
         }
 
-        [SlashCommand("claimable_add", "Add claimable NFTs")]
+        [SlashCommand("claimable_add", "Add a claimable NFT")]
         public async Task AddClaimableCommand(InteractionContext ctx, [Option("nftName", "The  NFT name")] string nftName, [Option("nftData", "The nftData")] string nftData)
         {
             var isValid = false;
@@ -1089,6 +1089,67 @@ namespace FroggieBot
                     var builder = new DiscordInteractionResponseBuilder()
                     .WithContent("Woah woah woah it's like you're speaking another language! My machines can't read that, please type the nftData in Hex Format : Example: 0x14e15ad24d034f0883e38bcf95a723244a9a22e17d47eb34aa2b91220be0adc4")
                 .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+            else
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("UNKNOWN COMMAND. For all claims please visit Gaia's MetaLab and Experiments. <#1036838681048264735>")
+                .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+        }
+
+        [SlashCommand("claimable_remove", "Remove a claimable NFT")]
+        public async Task RemoveClaimableCommand(InteractionContext ctx, [Option("nftData", "The nftData")] string nftData)
+        {
+            var isValid = false;
+            nftData = nftData.Trim();
+
+            if (nftData.Length == 66 && nftData.StartsWith("0x"))
+            {
+                isValid = true;
+            }
+
+            if (
+                 (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
+                 ||
+                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
+                )
+            {
+
+                await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Hold on removing the claimable NFT..."));
+
+                var queryResult = await SqlService.RemoveClaimable(nftData, Settings.SqlServerConnectionString);
+
+                if (queryResult > 0)
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I've removed the claimable NFT!"));
+                }
+                else if (queryResult == -1)
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Sorry, the claimable NFT has already been removed!"));
+                    return;
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Sorry, something went wrong! Please try again later..."));
+                    return;
+                }
+            }
+            else if (
+                    (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
+                    ||
+                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
+                    )
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("Woah woah woah it's like you're speaking another language! My machines can't read that, please type the nftData in Hex Format : Example: 0x14e15ad24d034f0883e38bcf95a723244a9a22e17d47eb34aa2b91220be0adc4")
+            .AsEphemeral(true);
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
                 return;
             }
