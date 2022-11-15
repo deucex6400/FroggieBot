@@ -1380,8 +1380,8 @@ namespace FroggieBot
             }
         }
 
-        [SlashCommand("claimed_remove", "Remove an address from the allow list")]
-        public async Task RemoveFromClaimedCommand(InteractionContext ctx, [Option("address", "The address for the allow list")] string address, [Option("nftData", "The nftData of the claimable nft")] string nftData)
+        [SlashCommand("claimed_remove", "Remove an address from the claimed list")]
+        public async Task RemoveFromClaimedCommand(InteractionContext ctx, [Option("address", "The address for the claimed list")] string address, [Option("nftData", "The nftData of the claimable nft")] string nftData)
         {
             var isValid = false;
             nftData = nftData.Trim();
