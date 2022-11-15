@@ -950,6 +950,7 @@ namespace FroggieBot
                             await MetaBoyApiService.AddClaim(nftReciever);
                         }
                         await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I just hand delivered your claim to the teleporter and it should be there as soon as possible! Please check your hidden tab and if there's any problems please follow our <#1005560078813896824> instructions and I'll be with you as soon as I can."));
+                        return;
                     }
                     else
                     {
@@ -1006,9 +1007,10 @@ namespace FroggieBot
                     string text = "Here are the claimable NFTs I found:\n";
                     foreach(var claimable in claimableList)
                     {
-                        text += $"NFT Name: {claimable.nftName}, NFT Data: {claimable.nftData}\n";
+                        text += $"NFT Name: {claimable.nftName}\nNFT Data: {claimable.nftData}\n\n";
                     }
                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{text}"));
+                    return;
                 }
                 else
                 {
@@ -1016,20 +1018,6 @@ namespace FroggieBot
                     return;
                 }
             }
-            /*
-            else if (
-                    (ctx.Channel.Id == 933963130197917698 && string.IsNullOrEmpty(hexAddress)) //fudgeys fun house
-                    ||
-                    (ctx.Channel.Id == 1036838681048264735 && string.IsNullOrEmpty(hexAddress)) //metaboy gais metalab
-                    )
-            {
-                var builder = new DiscordInteractionResponseBuilder()
-                .WithContent("Woah woah woah it's like you're speaking another language! My machines can't read that, please type it in Hex Format : Example: 0x36cd6b3b9329c04df55d55d41c257a5fdd387acd")
-                .AsEphemeral(true);
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
-                return;
-            }
-            */
             else
             {
                 var builder = new DiscordInteractionResponseBuilder()
@@ -1041,7 +1029,7 @@ namespace FroggieBot
         }
 
         [SlashCommand("claimable_add", "Add a claimable NFT")]
-        public async Task AddClaimableCommand(InteractionContext ctx, [Option("nftName", "The  NFT name")] string nftName, [Option("nftData", "The nftData")] string nftData)
+        public async Task AddClaimableCommand(InteractionContext ctx, [Option("nftName", "The  NFT name")] string nftName, [Option("nftData", "The nftData of the claimable nft")] string nftData)
         {
             var isValid = false;
             nftName = nftName.Trim();
@@ -1068,6 +1056,7 @@ namespace FroggieBot
                 if (queryResult == 1)
                 {
                     await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I've added the claimable NFT!"));
+                    return;
                 }
                 else if (queryResult == -1)
                 {
@@ -1103,7 +1092,7 @@ namespace FroggieBot
         }
 
         [SlashCommand("claimable_remove", "Remove a claimable NFT")]
-        public async Task RemoveClaimableCommand(InteractionContext ctx, [Option("nftData", "The nftData")] string nftData)
+        public async Task RemoveClaimableCommand(InteractionContext ctx, [Option("nftData", "The nftData of the claimable nft")] string nftData)
         {
             var isValid = false;
             nftData = nftData.Trim();
@@ -1128,7 +1117,8 @@ namespace FroggieBot
 
                 if (queryResult > 0)
                 {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I've removed the claimable NFT!"));
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I've removed the claimable NFT"));
+                    return;
                 }
                 else if (queryResult == -1)
                 {
@@ -1149,6 +1139,233 @@ namespace FroggieBot
             {
                 var builder = new DiscordInteractionResponseBuilder()
                 .WithContent("Woah woah woah it's like you're speaking another language! My machines can't read that, please type the nftData in Hex Format : Example: 0x14e15ad24d034f0883e38bcf95a723244a9a22e17d47eb34aa2b91220be0adc4")
+            .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+            else
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("UNKNOWN COMMAND. For all claims please visit Gaia's MetaLab and Experiments. <#1036838681048264735>")
+                .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+        }
+
+        [SlashCommand("allowlist_add", "Add an address to the allow list")]
+        public async Task AddToAllowlistCommand(InteractionContext ctx, [Option("address", "The address for the allowlist")] string address, [Option("nftData", "The nftData of the claimable nft")] string nftData, [Option("amount", "The amount for the claim")] long amount)
+        {
+            var isValid = false;
+            nftData = nftData.Trim();
+
+            string ethAddressRegexPattern = @"0x[a-fA-F0-9]{40}";
+            address = address.Trim();
+
+            var hexAddress = "";
+            foreach (Match m in Regex.Matches(address, ethAddressRegexPattern))
+            {
+                hexAddress = m.Value.ToLower();
+                break;
+            }
+
+            if (nftData.Length == 66 && nftData.StartsWith("0x") && !string.IsNullOrEmpty(hexAddress))
+            {
+                isValid = true;
+            }
+
+            if (
+                 (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
+                 ||
+                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
+                )
+            {
+
+                await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Hold on adding this to the allow list..."));
+
+                var queryResult = await SqlService.AddToAllowlist(hexAddress, nftData, amount.ToString(), Settings.SqlServerConnectionString);
+
+                if (queryResult > 0)
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I've added this to the allow list"));
+                    return;
+                }
+                else if (queryResult == -1)
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Sorry, this has already been added to the allow list!"));
+                    return;
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Sorry, something went wrong! Please try again later..."));
+                    return;
+                }
+            }
+            else if (
+                    (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
+                    ||
+                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
+                    )
+            {
+                string text = "Woah woah woah it's like you're speaking another language!\n";
+                text += "My machines can't read that, please type the nftData in Hex Format : Example: 0x14e15ad24d034f0883e38bcf95a723244a9a22e17d47eb34aa2b91220be0adc4\n";
+                text += "Addresses should be in Hex Format too : Example: 0x36cd6b3b9329c04df55d55d41c257a5fdd387acd\n";
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent($"{text}")
+            .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+            else
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("UNKNOWN COMMAND. For all claims please visit Gaia's MetaLab and Experiments. <#1036838681048264735>")
+                .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+        }
+
+        [SlashCommand("allowlist_remove", "Remove an address from the allow list")]
+        public async Task RemoveFromAllowlistCommand(InteractionContext ctx, [Option("address", "The address for the allow list")] string address, [Option("nftData", "The nftData of the claimable nft")] string nftData)
+        {
+            var isValid = false;
+            nftData = nftData.Trim();
+
+            string ethAddressRegexPattern = @"0x[a-fA-F0-9]{40}";
+            address = address.Trim();
+
+            var hexAddress = "";
+            foreach (Match m in Regex.Matches(address, ethAddressRegexPattern))
+            {
+                hexAddress = m.Value.ToLower();
+                break;
+            }
+
+            if (nftData.Length == 66 && nftData.StartsWith("0x") && !string.IsNullOrEmpty(hexAddress))
+            {
+                isValid = true;
+            }
+
+            if (
+                 (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
+                 ||
+                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
+                )
+            {
+
+                await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Hold on removing this from the allow list..."));
+
+                var queryResult = await SqlService.RemoveFromAllowlist(hexAddress, nftData, Settings.SqlServerConnectionString);
+
+                if (queryResult > 0)
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I've removed this from the allow list"));
+                    return;
+                }
+                else if (queryResult == -1)
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Sorry, this has already been removed from the allow list!"));
+                    return;
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Sorry, something went wrong! Please try again later..."));
+                    return;
+                }
+            }
+            else if (
+                    (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
+                    ||
+                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
+                    )
+            {
+                string text = "Woah woah woah it's like you're speaking another language!\n";
+                text += "My machines can't read that, please type the nftData in Hex Format : Example: 0x14e15ad24d034f0883e38bcf95a723244a9a22e17d47eb34aa2b91220be0adc4\n";
+                text += "Addresses should be in Hex Format too : Example: 0x36cd6b3b9329c04df55d55d41c257a5fdd387acd\n";
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent($"{text}")
+            .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+            else
+            {
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent("UNKNOWN COMMAND. For all claims please visit Gaia's MetaLab and Experiments. <#1036838681048264735>")
+                .AsEphemeral(true);
+                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
+                return;
+            }
+        }
+
+        [SlashCommand("allowlist_check", "Check if an address is in the allow list")]
+        public async Task CheckAllowlistCommand(InteractionContext ctx, [Option("address", "The address for the allow list")] string address, [Option("nftData", "The nftData of the claimable nft")] string nftData)
+        {
+            var isValid = false;
+            nftData = nftData.Trim();
+
+            string ethAddressRegexPattern = @"0x[a-fA-F0-9]{40}";
+            address = address.Trim();
+
+            var hexAddress = "";
+            foreach (Match m in Regex.Matches(address, ethAddressRegexPattern))
+            {
+                hexAddress = m.Value.ToLower();
+                break;
+            }
+
+            if (nftData.Length == 66 && nftData.StartsWith("0x") && !string.IsNullOrEmpty(hexAddress))
+            {
+                isValid = true;
+            }
+
+            if (
+                 (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
+                 ||
+                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
+                )
+            {
+
+                await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Hold on checking the allow list..."));
+
+                var queryResult = await SqlService.CheckAllowlist(hexAddress, nftData, Settings.SqlServerConnectionString);
+
+                if (queryResult != null && queryResult.Address != "Error")
+                {
+                    string text = "I've found the address in the allow list with the following details:\n";
+                    text += $"Address: {address}\nNftData: {nftData}\nAmount: {queryResult.Amount}\n";
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{text}"));
+                    return;
+                }
+                else if (queryResult != null && queryResult.Address == "Error")
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Sorry, something went wrong! Please try again later..."));
+                    return;
+                }
+                else
+                {
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I could not find that address and nftData in the allow list!"));
+                    return;
+                }
+            }
+            else if (
+                    (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
+                    ||
+                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
+                    )
+            {
+                string text = "Woah woah woah it's like you're speaking another language!\n";
+                text += "My machines can't read that, please type the nftData in Hex Format : Example: 0x14e15ad24d034f0883e38bcf95a723244a9a22e17d47eb34aa2b91220be0adc4\n";
+                text += "Addresses should be in Hex Format too : Example: 0x36cd6b3b9329c04df55d55d41c257a5fdd387acd\n";
+                var builder = new DiscordInteractionResponseBuilder()
+                .WithContent($"{text}")
             .AsEphemeral(true);
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
                 return;

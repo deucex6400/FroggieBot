@@ -1,12 +1,6 @@
 ﻿using Dapper;
 using FroggieBot.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FroggieBot
 {
@@ -73,7 +67,7 @@ namespace FroggieBot
                     await db.OpenAsync();
                     var doesClaimableExistParameters = new { NftData = nftData };
                     var doesClaimableExist = await db.QueryAsync<Claimable>($"select * from claimable where nftdata = @NftData", doesClaimableExistParameters);
-                    if (doesClaimableExist.ToList().Count == 0)
+                    if (doesClaimableExist.ToList().Count > 0)
                     {
                         var deleteParameters = new
                         {
@@ -90,6 +84,98 @@ namespace FroggieBot
             catch (Exception ex)
             {
 
+            }
+            return result; //0 if something goes wrong
+        }
+
+        public async Task<int> AddToAllowlist(string address, string nftData, string amount, string connectionString)
+        {
+            int result = 0;
+            try
+            {
+                using (SqlConnection db = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    await db.OpenAsync();
+                    var doesAllowListExistParameters = new { Address = address, NftData = nftData };
+                    var doesAllowListExist = await db.QueryAsync<AllowList>($"select * from allowlist where nftdata = @NftData and address = @Address", doesAllowListExistParameters);
+                    if (doesAllowListExist.ToList().Count == 0)
+                    {
+                        var addToAllowListParameters = new
+                        {
+                            Address = address,
+                            NftData = nftData,
+                            Amount = amount,
+                        };
+                        result = await db.ExecuteAsync("INSERT INTO AllowList (Address,NftData,Amount) Values (@Address,@NftData,@Amount)", addToAllowListParameters); // > 0 when added
+                    }
+                    else
+                    {
+                        result = -1; // -1 when already exists
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return result; //0 if something goes wrong
+        }
+
+        public async Task<int> RemoveFromAllowlist(string address, string nftData, string connectionString)
+        {
+            int result = 0;
+            try
+            {
+                using (SqlConnection db = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    await db.OpenAsync();
+                    var doesAllowListExistParameters = new { Address = address, NftData = nftData };
+                    var doesAllowListExist = await db.QueryAsync<AllowList>($"select * from allowlist where nftdata = @NftData and address = @Address", doesAllowListExistParameters);
+                    if (doesAllowListExist.ToList().Count > 0)
+                    {
+                        var removeFromAllowListParameters = new
+                        {
+                            Address = address,
+                            NftData = nftData,
+                        };
+                        result = await db.ExecuteAsync("DELETE From allowlist where address = @Address and nftdata = @NftData", removeFromAllowListParameters); // > 0 when added
+                    }
+                    else
+                    {
+                        result = -1; // -1 when already exists
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return result; //0 if something goes wrong
+        }
+
+        public async Task<AllowList?> CheckAllowlist(string address, string nftData, string connectionString)
+        {
+            AllowList? result = new AllowList();
+            try
+            {
+                using (SqlConnection db = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    await db.OpenAsync();
+                    var doesAllowListExistParameters = new { Address = address, NftData = nftData };
+                    var doesAllowListExist = await db.QueryAsync<AllowList>($"select * from allowlist where nftdata = @NftData and address = @Address", doesAllowListExistParameters);
+                    if (doesAllowListExist.ToList().Count > 0)
+                    {
+                        result = doesAllowListExist.First();
+                    }
+                    else
+                    {
+                        result = null; // -1 when already exists
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Address = "Error";
             }
             return result; //0 if something goes wrong
         }
