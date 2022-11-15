@@ -1041,56 +1041,57 @@ namespace FroggieBot
         }
 
         [SlashCommand("claimable_add", "Add claimable NFTs")]
-        public async Task AddClaimableCommand(InteractionContext ctx)
+        public async Task AddClaimableCommand(InteractionContext ctx, [Option("nftName", "The  NFT name")] string nftName, [Option("nftData", "The nftData")] string nftData)
         {
+            var isValid = false;
+            nftName = nftName.Trim();
+            nftData = nftData.Trim();
+
+            if(nftName.Length > 0 && nftData.Length == 66 && nftData.StartsWith("0x"))
+            {
+                isValid = true;
+            }
 
             if (
-                 (ctx.Channel.Id == 933963130197917698) //fudgeys fun house 
+                 (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
                  ||
-                 (ctx.Channel.Id == 1036838681048264735) //metaboy gaias metalab
+                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
                 )
             {
 
-                List<Claimable> claimableList = new List<Claimable>();
                 await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
-                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Hold on checking the claimable NFTs..."));
+                await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Hold on adding the claimable NFT..."));
 
-                var claimables = await SqlService.GetClaimable(Settings.SqlServerConnectionString);
-                foreach (var claimable in claimables)
+                var queryResult = await SqlService.AddClaimable(nftName, nftData, Settings.SqlServerConnectionString);
+
+                if (queryResult == 1)
                 {
-                    claimableList.Add(claimable);
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I've added the claimable NFT!"));
                 }
-
-                if (claimableList.Count > 0)
+                else if (queryResult == -1)
                 {
-                    string text = "Here are the claimable NFTs I found:\n";
-                    foreach (var claimable in claimableList)
-                    {
-                        text += $"NFT Name: {claimable.nftName}, NFT Data: {claimable.nftData}\n";
-                    }
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"{text}"));
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Sorry, the claimable NFT already exists!"));
+                    return;
                 }
                 else
                 {
-                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"I'm sorry I can't see to find any claimable NFTs...You can add claimable nfts with the slash command: claimable_add"));
+                    await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent($"Sorry, something went wrong! Please try again later..."));
                     return;
                 }
             }
-            /*
             else if (
-                    (ctx.Channel.Id == 933963130197917698 && string.IsNullOrEmpty(hexAddress)) //fudgeys fun house
+                    (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
                     ||
-                    (ctx.Channel.Id == 1036838681048264735 && string.IsNullOrEmpty(hexAddress)) //metaboy gais metalab
+                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
                     )
             {
-                var builder = new DiscordInteractionResponseBuilder()
-                .WithContent("Woah woah woah it's like you're speaking another language! My machines can't read that, please type it in Hex Format : Example: 0x36cd6b3b9329c04df55d55d41c257a5fdd387acd")
+                    var builder = new DiscordInteractionResponseBuilder()
+                    .WithContent("Woah woah woah it's like you're speaking another language! My machines can't read that, please type the nftData in Hex Format : Example: 0x14e15ad24d034f0883e38bcf95a723244a9a22e17d47eb34aa2b91220be0adc4")
                 .AsEphemeral(true);
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, builder);
                 return;
             }
-            */
             else
             {
                 var builder = new DiscordInteractionResponseBuilder()
