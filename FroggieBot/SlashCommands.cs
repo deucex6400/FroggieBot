@@ -987,7 +987,7 @@ namespace FroggieBot
             if (
                  (ctx.Channel.Id == 933963130197917698) //fudgeys fun house 
                  ||
-                 (ctx.Channel.Id == 1036838681048264735) //metaboy gaias metalab
+                 (ctx.Channel.Id == 1041946124296146945) //metaboy gaias admin
                 )
             {
 
@@ -1043,7 +1043,7 @@ namespace FroggieBot
             if (
                  (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
                  ||
-                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
+                 (ctx.Channel.Id == 1041946124296146945 && isValid) //metaboy gaias admin
                 )
             {
 
@@ -1072,7 +1072,7 @@ namespace FroggieBot
             else if (
                     (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
                     ||
-                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
+                    (ctx.Channel.Id == 1041946124296146945 && !isValid) //metaboy gais admin
                     )
             {
                     var builder = new DiscordInteractionResponseBuilder()
@@ -1105,7 +1105,7 @@ namespace FroggieBot
             if (
                  (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
                  ||
-                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
+                 (ctx.Channel.Id == 1041946124296146945 && isValid) //metaboy gaias admin
                 )
             {
 
@@ -1134,7 +1134,7 @@ namespace FroggieBot
             else if (
                     (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
                     ||
-                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
+                    (ctx.Channel.Id == 1041946124296146945 && !isValid) //metaboy gais admin
                     )
             {
                 var builder = new DiscordInteractionResponseBuilder()
@@ -1177,7 +1177,7 @@ namespace FroggieBot
             if (
                  (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
                  ||
-                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
+                 (ctx.Channel.Id == 1041946124296146945 && isValid) //metaboy gaias admin
                 )
             {
 
@@ -1206,7 +1206,7 @@ namespace FroggieBot
             else if (
                     (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
                     ||
-                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
+                    (ctx.Channel.Id == 1041946124296146945 && !isValid) //metaboy gais admin
                     )
             {
                 string text = "Woah woah woah it's like you're speaking another language!\n";
@@ -1252,7 +1252,7 @@ namespace FroggieBot
             if (
                  (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
                  ||
-                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
+                 (ctx.Channel.Id == 1041946124296146945 && isValid) //metaboy gaias admin
                 )
             {
 
@@ -1281,7 +1281,7 @@ namespace FroggieBot
             else if (
                     (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
                     ||
-                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
+                    (ctx.Channel.Id == 1041946124296146945 && !isValid) //metaboy gais admin
                     )
             {
                 string text = "Woah woah woah it's like you're speaking another language!\n";
@@ -1327,7 +1327,7 @@ namespace FroggieBot
             if (
                  (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
                  ||
-                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
+                 (ctx.Channel.Id == 1041946124296146945 && isValid) //metaboy gaias admin
                 )
             {
 
@@ -1358,7 +1358,7 @@ namespace FroggieBot
             else if (
                     (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
                     ||
-                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
+                    (ctx.Channel.Id == 1041946124296146945 && !isValid) //metaboy gaias admin
                     )
             {
                 string text = "Woah woah woah it's like you're speaking another language!\n";
@@ -1404,7 +1404,7 @@ namespace FroggieBot
             if (
                  (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
                  ||
-                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
+                 (ctx.Channel.Id == 1041946124296146945 && isValid) //metaboy gaia admin
                 )
             {
 
@@ -1433,7 +1433,7 @@ namespace FroggieBot
             else if (
                     (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
                     ||
-                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
+                    (ctx.Channel.Id == 1041946124296146945 && !isValid) //metaboy gais admin
                     )
             {
                 string text = "Woah woah woah it's like you're speaking another language!\n";
@@ -1480,7 +1480,7 @@ namespace FroggieBot
             if (
                  (ctx.Channel.Id == 933963130197917698 && isValid) //fudgeys fun house 
                  ||
-                 (ctx.Channel.Id == 1036838681048264735 && isValid) //metaboy gaias metalab
+                 (ctx.Channel.Id == 1041946124296146945 && isValid) //metaboy gaias admin
                 )
             {
 
@@ -1511,7 +1511,7 @@ namespace FroggieBot
             else if (
                     (ctx.Channel.Id == 933963130197917698 && !isValid) //fudgeys fun house
                     ||
-                    (ctx.Channel.Id == 1036838681048264735 && !isValid) //metaboy gais metalab
+                    (ctx.Channel.Id == 1041946124296146945 && !isValid) //metaboy gaia admin
                     )
             {
                 string text = "Woah woah woah it's like you're speaking another language!\n";
