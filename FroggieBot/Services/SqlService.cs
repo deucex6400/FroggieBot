@@ -104,7 +104,7 @@ namespace FroggieBot
                         {
                             Address = address,
                             NftData = nftData,
-                            Amount = amount,
+                            Amount = amount
                         };
                         result = await db.ExecuteAsync("INSERT INTO AllowList (Address,NftData,Amount) Values (@Address,@NftData,@Amount)", addToAllowListParameters); // > 0 when added
                     }
@@ -136,13 +136,13 @@ namespace FroggieBot
                         var removeFromAllowListParameters = new
                         {
                             Address = address,
-                            NftData = nftData,
+                            NftData = nftData
                         };
                         result = await db.ExecuteAsync("DELETE From allowlist where address = @Address and nftdata = @NftData", removeFromAllowListParameters); // > 0 when added
                     }
                     else
                     {
-                        result = -1; // -1 when already exists
+                        result = -1; // -1 when already removed
                     }
                 }
             }
@@ -166,6 +166,65 @@ namespace FroggieBot
                     if (doesAllowListExist.ToList().Count > 0)
                     {
                         result = doesAllowListExist.First();
+                    }
+                    else
+                    {
+                        result = null; // -1 when already exists
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Address = "Error";
+            }
+            return result; //0 if something goes wrong
+        }
+
+        public async Task<int> RemoveFromClaimed(string address, string nftData, string connectionString)
+        {
+            int result = 0;
+            try
+            {
+                using (SqlConnection db = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    await db.OpenAsync();
+                    var doesClaimExistParameters = new { Address = address, NftData = nftData };
+                    var doesClaimExist = await db.QueryAsync<Claimed>($"select * from claimed where nftdata = @NftData and address = @Address", doesClaimExistParameters);
+                    if (doesClaimExist.ToList().Count > 0)
+                    {
+                        var removeFromAllowListParameters = new
+                        {
+                            Address = address,
+                            NftData = nftData
+                        };
+                        result = await db.ExecuteAsync("DELETE From claimed where address = @Address and nftdata = @NftData", removeFromAllowListParameters); // > 0 when added
+                    }
+                    else
+                    {
+                        result = -1; // -1 when already removed
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return result; //0 if something goes wrong
+        }
+
+        public async Task<Claimed?> CheckClaimed(string address, string nftData, string connectionString)
+        {
+            Claimed? result = new Claimed();
+            try
+            {
+                using (SqlConnection db = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    await db.OpenAsync();
+                    var doesClaimExistParameters = new { Address = address, NftData = nftData };
+                    var doesClaimExist = await db.QueryAsync<Claimed>($"select * from claimed where nftdata = @NftData and address = @Address", doesClaimExistParameters);
+                    if (doesClaimExist.ToList().Count > 0)
+                    {
+                        result = doesClaimExist.First();
                     }
                     else
                     {
