@@ -32,6 +32,16 @@ namespace FroggieBot
                 Console.WriteLine($"Error getting gas: {httpException.Message}");
                 return null;
             }
+            catch (JsonReaderException sre)
+            {
+                Console.WriteLine($"Error getting gas: {sre.Message}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting gas: {ex.Message}");
+                return null;
+            }
         }
 
         public void Dispose()

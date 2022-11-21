@@ -19,6 +19,5 @@ namespace FroggieBot
         public string EtherScanApiKey { get; set; }
         public ulong DiscordServerId { get; set; }
         public string DiscordToken { get; set; }
-        public string OpenAIKey { get; set; }
     }
 }

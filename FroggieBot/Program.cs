@@ -2,9 +2,12 @@
 using DSharpPlus.EventArgs;
 using DSharpPlus.SlashCommands;
 using FroggieBot;
+using FroggieBot.Models;
+using FroggieBot.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using OpenAI_API;
 
 IConfiguration config = new ConfigurationBuilder()
@@ -13,9 +16,13 @@ IConfiguration config = new ConfigurationBuilder()
     .Build();
 Settings settings = config.GetRequiredSection("Settings").Get<Settings>();
 
-//Open AI settings
-Engine engine = new Engine("text-davinci-002") { Owner = "openai", Ready = true };
-OpenAIAPI openAI = new OpenAI_API.OpenAIAPI(settings.OpenAIKey, engine);
+Ranks? ranks;
+
+using (StreamReader r = new StreamReader("ranks.json"))
+{
+    string json = r.ReadToEnd();
+    ranks = JsonConvert.DeserializeObject<Ranks>(json);
+}
 
 var discord = new DiscordClient(new DiscordConfiguration()
 {
@@ -34,10 +41,12 @@ new SlashCommandsConfiguration
     .AddSingleton<Random>()
     .AddScoped<SqlService>()
     .AddSingleton<Settings>(settings)
-    .AddSingleton<OpenAIAPI>(openAI)
     .AddSingleton<EthereumService>()
+    .AddSingleton<GamestopService>()
+    .AddSingleton<MetaBoyApiService>()
     .BuildServiceProvider()
-});
+}); ;
+SlashCommands.Ranks = ranks;
 slash.RegisterCommands<SlashCommands>(settings.DiscordServerId);
 
 await discord.ConnectAsync();
